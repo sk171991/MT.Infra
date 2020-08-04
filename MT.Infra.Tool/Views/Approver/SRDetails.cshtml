@@ -1,0 +1,373 @@
+﻿@model MT.Infra.Tool.Models.ApproverSRDetails
+
+@{
+    ViewBag.Title = "SRDetails";
+    Layout = "~/Views/Shared/_ApproverLayout.cshtml";
+    var approveerror = TempData["ApproveError"] ?? string.Empty;
+}
+<script src="~/Scripts/a076d05399.js"></script>
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+<style>
+    .tooltip-wrap {
+        position: relative;
+    }
+
+        .tooltip-wrap .tooltip-content {
+            display: none;
+            position: absolute;
+            width: 500px;
+            bottom: 100%;
+            left: 1%;
+            right: 1%;
+            background-color: #fff;
+            padding: .5em;
+        }
+
+        .tooltip-wrap:hover .tooltip-content {
+            display: block;
+            position: absolute;
+            width: 300px;
+            left: 1%;
+            right: 1%;
+            color: #ffffff;
+            padding: .5em;
+        }
+</style>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div style="font-size:12px;color:black">
+        @if (@ViewBag.errmsg != null)
+        {
+            <span id="errmsg" style="color: red;">@ViewBag.errmsg</span>
+        }
+        <div class="form-group row">
+            <h4></h4>
+            @foreach (var SRDetail in ViewBag.SRDetails)
+            {
+                <h4 class="col-sm-7">SR Details for SR Number : @SRDetail.ServiceRequest_ID</h4>
+            }
+        </div>
+
+        <table class="table table-borderless" align="center">
+            <tbody class="col-sm-12">
+                <tr>
+                    <th class="col-sm-2">
+                        <label>SR Raised By:</label>
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.Name</span>
+                        }
+                    </td>
+
+                    <th class="col-sm-2">
+                        <label>User Location:</label>
+                    </th>
+                    <td class="col-sm-1" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.UserLocation</span>
+                        }
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <th class="col-sm-2">
+                        <label>User Contact No:</label>
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.ContactNumber</span>
+                        }
+                    </td>
+                    <th class="col-sm-2">
+                        <label>Asset Usage Type:</label>
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.AssetUsageType</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col-sm-2">
+                        <label>Assigned To:</label>
+                    </th>
+                    <td class="col-sm-4" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.AssignedTo (@SRDetail.Role)</span>
+                        }
+                    </td>
+                    <th class="col-sm-2">
+                        <label>Status:</label>
+                    </th>
+                    <td class="col-sm-2" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <div class="tooltip-wrap">
+                                @SRDetail.statusName
+                                <img src="~/Images/status.png" alt="Some Image" />
+                                <div class="tooltip-content">
+                                    <p>@ViewBag.statushelper</p>
+                                </div>
+
+                            </div>
+                        }
+
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col-sm-2">
+                        <label>From Date:</label>
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.FromDate.ToShortDateString()</span>
+                        }
+                    </td>
+
+                    <th class="col-sm-2">
+                        <label>Till Date:</label>
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.TillDate.ToShortDateString()</span>
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="col-sm-2">
+                        <label>SR Description:</label>
+                    </th>
+                    <td class="col-sm-4" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <textarea rows="3" cols="40" style="color:black;overflow-y:scroll" readonly>@SRDetail.SRDescription</textarea>
+                        }
+                    </td>
+                    <th class="col-sm-2">
+                        @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-4" align="left">
+                        @Html.TextAreaFor(model => model.Comments, 2, 80, new { @class = " scrollabletextbox form-control areaWidth", @id = "txtComments" })
+                        @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="col-sm-2">
+                        <label>Created Date:</label>
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @foreach (var SRDetail in ViewBag.SRDetails)
+                        {
+                            <span>@SRDetail.CreatedDate.ToShortDateString()</span>
+                        }
+                    </td>
+
+                    <th class="col-sm-2">
+                        <label id="Attachment">Requested MIDs:</label>
+                    </th>
+                    <td class="col-sm-2" align="left">
+                        @foreach (var items in ViewBag.Attachment)
+                        {
+                            @items.fileName<a class="btn btnDownload" id="@items.fileName" href="#"><i class="fa fa-download"></i></a>
+                        }
+                    </td>
+                </tr>
+                <tr class="AssetList">
+                    <th class="col-sm-2">
+                        <label id="Assets">Asset Assigned:</label>
+                    </th>
+                    <td class="col-sm-2" align="left">
+                        <input type="button" id="BtnAssets" data-toggle="modal" data-target="#AssetList" value="Assets Assigned">
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+        <!-- Asset List Modal -->
+        <div class="modal fade" id="AssetList" role="dialog">
+            <div class="modal-dialog" style="width:1200px">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">List of Assets Assigned to this Request <label class="Astname"></label></h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <table id="AssetAssign" class="table table-bordered" style="width:100%">
+                            <caption style="color:#7a53f2; font-size:20px"><b>Assets Details</b></caption>
+                            <thead>
+                                <tr style="background-color:#7386D5">
+                                    <th>AssetName</th>
+                                    <th>IP Address</th>
+                                    <th>Asste Type</th>
+                                    <th>Asste Expiry Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (ViewBag.AssetName != null)
+                                {
+                                    foreach (var items in ViewBag.AssetName)
+                                    {
+
+                                        <tr>
+                                            <td>@items.SystemName</td>
+                                            <td>@items.SystemIP</td>
+                                            <td>@items.MachineType</td>
+                                            <td>@items.ExpirationDate.ToShortDateString()</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        Not Assigned
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="btnClose">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            @foreach (var SRDetail in ViewBag.SRDetails)
+            {
+                if (SRDetail.statusName == "Open")
+                {
+                    <table class="col-sm-12" align="center">
+                        <tbody class="col-sm-12">
+                            <tr>
+                                <td style="padding-left:20em" class="col-sm-6">
+                                    @*<input type="submit" id="cmtChk" value="Submit" class="btn btn-success" />*@
+                                </td>
+                                <td class="col-sm-2">
+                                    <input type="submit" value="Approve" class="btn btn-success" name="approvesr" />
+                                </td>
+                                <td style="padding-left:3em" class="col-sm-7">
+                                    <input type="submit" value="Reject" class="btn btn-danger" name="rejectsr" onclick="closeFunction()" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            }
+        </div>
+        <h4 class="col-sm-4">Ticket History</h4>
+
+        <table class="table table-bordered" align="center" style="overflow-y:scroll">
+            <tbody>
+                <tr style="background-color:#7386D5">
+                    <th class="col-sm-2" style="text-align:center">Response Date</th>
+                    <th class="col-sm-1" style="text-align:center">Status</th>
+                    <th class="col-sm-2" style="text-align:center">Assigned To</th>
+                    <th class="col-sm-2" style="text-align:center">Role</th>
+                    <th class="col-sm-4" style="text-align:center">Comments</th>
+                </tr>
+
+                @foreach (var TicketHistory in ViewBag.TicketHistory)
+                {
+                    <tr>
+                        <td class="col-sm-2" style="text-align:center">
+                            <span>@TicketHistory.LastModifiedTimeStamp</span>
+                        </td>
+                        <td class="col-sm-1" style="text-align:center">
+                            <span>@TicketHistory.StatusName</span>
+                        </td>
+                        <td class="col-sm-2" style="text-align:center">
+                            <span>@TicketHistory.UserName</span>
+                        </td>
+                        <td class="col-sm-2" style="text-align:center">
+                            <span>@TicketHistory.UserRole</span>
+                        </td>
+                        <td class="col-sm-4">
+                            <span>@TicketHistory.Comments</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <script type="text/javascript">
+
+        function closeFunction() {
+            do {
+                var reason = prompt('Reason for Rejecting this SR: (This is Required)');
+                document.getElementById("txtComments").innerHTML = reason;
+            }
+            while (reason !== null && reason === "")
+            {
+                $('#txtComments').attr('readonly', true);
+            }
+        }
+         function Assettable() {
+            $('#AssetAssign').DataTable();
+             $('.dataTables_length').addClass('bs-select');
+        }
+        function Assets() {
+                if (@ViewBag.AssetName.Count != 0) {
+                    $(".AssetList").show();
+                }
+                else {
+                    $(".AssetList").hide();
+                }
+            }
+        $(document).ready(function () {
+            $.noConflict();
+                        Assets();
+                      Assettable();
+            var message = '@approveerror';
+                    if (message != '') {
+                        alert(message);
+
+                    }
+            if (@ViewBag.Attachment.Count == 0) {
+                $("#Attachment").hide();
+            }
+            else {
+                 $("#Attachment").show();
+            }
+
+            $(".btnDownload").on('click', function () {
+                 var filename = this.id;
+                 var path = "../Upload/" + filename;
+                 this.href = path;
+                 this.Download = filename;
+                 alert("Requested file has been downloaded successfully");
+             });
+
+
+
+
+
+        });
+        </script>
+    </div>
+}
+
+

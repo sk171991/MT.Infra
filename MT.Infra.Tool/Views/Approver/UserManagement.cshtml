@@ -1,0 +1,260 @@
+﻿@model MT.Infra.BusinessLayer.Viewusermodel
+
+@{
+    ViewBag.Title = "UserManagement";
+    Layout = "~/Views/Shared/_ApproverLayout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserManagement</title>
+    <style>
+        .b {
+            /*border: 1px solid #ff0000;*/
+            margin-top: 7px;
+            text-align: left;
+        }
+
+        .c {
+            margin-top: 7px;
+        }
+
+        .drop {
+            width: 210px;
+        }
+    </style>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="~/Content/jquery.dataTables.css">
+</head>
+
+<body>
+    <div class="panel responsive">
+        @using (Html.BeginForm())
+        {
+            @Html.Raw(TempData["msg"])
+          //  @Html.Raw(ViewBag.Message)
+            @Html.AntiForgeryToken()
+            <h4>Add User</h4>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group" style="font-size:12px">
+        <table class="table table-borderless">
+            <tbody class="col-sm-12">
+                <tr>
+                    <th class="col-sm-3" style="padding-right:0em" align="right">
+                        @Html.LabelFor(model => model.Name, "Name:", htmlAttributes: new { @class = "control-label required" })
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", required = "Required"} })
+                    </td>
+                    <td class="col-sm-1"></td>
+                    <th class="col-sm-2"  align="right">
+                        @Html.LabelFor(model => model.EmployeeID, "MID:", htmlAttributes: new { @class = "control-label required" })
+                    </th>
+                    <td class="col-sm-3" align="left" style="padding-left:1px" >
+                        @Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { required = "Role Required", @class = "form-control" }, @id = "txtname" })
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col-sm-3" align="right">
+                        @Html.LabelFor(model => model.ContactNumber, "Contact Number:", htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @Html.EditorFor(model => model.ContactNumber, new { htmlAttributes = new { required = "Role Required", placeholder = "+91", @class = "form-control" } })
+                    </td>
+                    <td class="col-sm-1"></td>
+                    <th class="col-sm-2" style="padding-right:0em" align="right">
+                        @Html.LabelFor(model => model.UserLocation, "User Location:", htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-3" style="padding-left:0em;" align="left">
+                        @Html.DropDownList("UserLocation", (IEnumerable<SelectListItem>)ViewBag.DropdownLocation, "Choose Location", new { required = "Role Required", @class = "form-control drop" })
+                    </td>
+                    </tr>
+                <tr>
+                    <th class="col-sm-3" align="right">
+                        @Html.LabelFor(model => model.EmailId, "Email ID:", htmlAttributes: new { @class = "control-label required" })
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { required = "Role Required", id = "txtEmailid", @class = "form-control " } })
+                    </td>
+                    <td class="col-sm-1"></td>
+                    <th class="col-sm-2" style="padding-right:0em" align="right">
+                        @Html.LabelFor(model => model.UserRole, "User Role:", htmlAttributes: new { @class = "control-label required" })
+                    </th>
+                    <td class="col-sm-3" style="padding-left:0em;" align="left">
+                        @Html.DropDownListFor(model => model.UserRole, ViewData["Roles"] as SelectList, "Choose Role", new { required = "Role Required", @class = "form-control drop" })
+                    </td>
+                    <td class="col-sm-3" style="padding-left:0em;" align="left">
+                        <input type="submit" value="Submit" class="btn btn-success" id="Submituser" />
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @*<div class="row">
+            <div class="col-md-offset-2 col-md-2 col-xs-2 b">
+                @Html.LabelFor(model => model.Name,"Name", htmlAttributes: new { @class = "control-label required" })
+            </div>
+            <div class="col-md-6 col-xs-6 c">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new {required = "Role Required", @class = "form-control" }, @id = "txtname" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2 col-xs-2 b ">
+                @Html.LabelFor(model => model.EmployeeID,"MID", htmlAttributes: new { @class = "control-label required" })
+            </div>
+            <div class="col-md-6 col-xs-6 c">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { required = "Role Required",maxlength="8", @class = "form-control "  } })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(model => model.EmployeeID, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2 col-xs-2 b">
+                @Html.LabelFor(model => model.ContactNumber,"Contact Number" , htmlAttributes: new { @class = " control-label required" })
+            </div>
+            <div class="col-md-6 col-xs-6 c">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.EditorFor(model => model.ContactNumber, new { htmlAttributes = new { required = "Role Required",placeholder = "+91", @class = "form-control" } })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(model => model.ContactNumber, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-md-offset-2 col-md-2 col-xs-2 b">
+                @Html.LabelFor(model => model.UserLocation, "User Location",htmlAttributes: new { @class = "control-label required" })
+            </div>
+            <div class="col-md-6 col-xs-6 c">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.DropDownList("UserLocation", (IEnumerable<SelectListItem>)ViewBag.DropdownLocation, "Choose Location", new { required = "Role Required",@class = "form-control drop" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(model => model.UserLocation, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </div>
+
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2 col-xs-2 b">
+                @Html.LabelFor(model => model.EmailId,"Email ID" , htmlAttributes: new { @class = "control-label required" })
+            </div>
+            <div class="col-md-4 col-xs-4 c">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { required = "Role Required",id = "txtEmailid", @class = "form-control " } })
+                        </td>
+                        <td style="color:red;">
+                            @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-2 col-xs-2 b">
+                @Html.LabelFor(model => model.UserRole, "User Role",htmlAttributes: new { @class = "control-label required" })
+            </div>
+            <div class="col-md-6 col-xs-6 c">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.DropDownListFor(model => model.UserRole, ViewData["Roles"] as SelectList, "Choose Role", new {required = "Role Required", @class = "form-control drop" })
+                        </td>
+                        <td>
+                            @Html.ValidationMessageFor(model => model.UserRole, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>*@
+       
+        <div>
+            <hr style="border:solid" />
+            <table id="tableID" class="table table-bordered" cellspacing="0" style="width:100%;">
+
+                <caption style="color:#7a53f2; font-size:20px"><b>User Details</b></caption>
+                <thead>
+                    <tr style="background-color:#7386D5">
+                        <th style="color:white">Name</th>
+                        <th style="color:white">EmployeeID</th>
+                        <th style="color:white">Contact Number</th>
+                        <th style="color:white">User Location</th>
+                        <th style="color:white">EmailId</th>
+                        <th style="color:white">User Role</th>
+                        <th style="color:white">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in ViewBag.UserData)
+                    {
+                        <tr>
+                            <td>@row.Name</td>
+                            <td>@row.EmployeeID</td>
+                            <td>@row.ContactNumber</td>
+                            <td>@row.UserLocation</td>
+                            <td>@row.EmailId</td>
+                            <td>@row.UserRole</td>
+                            <td style="white-space:nowrap;">
+                                @Html.ActionLink("Edit", "UserManageEdit", new { id = row.ID }, new { @class = "btn btn-xs btn-success" })
+                                @Html.ActionLink("Delete", "Delete", new { id = row.ID }, new { @class = "btn btn-xs btn-danger", onclick = "return confirm('Are sure wants to delete Record?');" })
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+        }
+
+        @if (ViewBag.Message != null)
+        {
+            <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+            </script>
+        }
+
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    function SearchTable() {
+        $('#tableID').DataTable();
+        $('.dataTables_length').addClass('bs-select');
+    }
+    $(document).ready(function () {
+        $.noConflict();
+        SearchTable();
+    });
+</script>
+

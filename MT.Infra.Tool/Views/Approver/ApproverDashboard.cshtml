@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "ApproverDashboard";
+    Layout = "~/Views/Shared/_ApproverLayout.cshtml";
+}
+    <style>
+        a:hover {
+            background-color: #87ae25;
+        }
+
+        .first {
+            width: 20%;
+        }
+
+        .ellipsis {
+            position: relative;
+        }
+
+            .ellipsis:before {
+                content: '&nbsp;';
+                visibility: hidden;
+            }
+
+            .ellipsis span {
+                position: absolute;
+                left: 0;
+                right: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+        table {
+            width: 100%;
+        }
+    </style>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<link rel="stylesheet" href="~/Content/jquery.dataTables.css">
+<html>
+<body>
+
+        <label id="changeRole">
+            Switch Roles :
+
+            <input type="radio" id="Approver" value="Approver">
+            <label for="Approver">Approver</label>
+            <input type="radio" id="Admin" name="Admin" value="Admin">
+            <label for="Admin">Admin</label><br>
+        </label>
+  
+        <table id="SrDashboard" class="table table-bordered" cellspacing="0" style="width:100%;height:5%">
+            <caption style="color:#7a53f2; font-size:15px"><b>Service Request Dashboard</b></caption>
+            <tr>
+                @foreach (var row in ViewBag.Approverdash)
+            {
+                if (row.Name.Trim() == "Open")
+                {
+                        <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                            <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="Open">OPEN</a></span>
+                        </td>
+                    }
+                    if (row.Name.Trim() == "Assigned")
+                    {
+                        <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                            <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="Assigned">ASSIGNED</a></span>
+                        </td>
+                    }
+                    if (row.Name.Trim() == "InProgress")
+                    {
+                        <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                            <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="InProgress">IN PROGRESS</a></span>
+                        </td>
+                    }
+
+                    if (row.Name.Trim() == "Closed")
+                    {
+                        <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                            <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="Closed">CLOSED</a></span>
+                        </td>
+                    }
+                }
+            </tr>
+
+            <tr>
+                @foreach (var row1 in ViewBag.Approverdash)
+            {
+                if (row1.Name.Trim() == "Open")
+                {
+                        <td style="text-align:center;">
+                            <span id="open" class="op" style="color:black;font-weight:bold"> @row1.Total</span>
+                        </td>
+                    }
+                    if (row1.Name.Trim() == "Assigned")
+                    {
+                        <td style="text-align:center;">
+                            <span id="assigned" class="As" style="color:black;font-weight:bold"> @row1.Total</span>
+                        </td>
+                    }
+                    if (row1.Name.Trim() == "InProgress")
+                    {
+                        <td style="text-align:center;">
+                            <span id="inprogress" class="IP" style="color:black;font-weight:bold"> @row1.Total</span>
+                        </td>
+                    }
+
+                    if (row1.Name.Trim() == "Closed")
+                    {
+
+                        <td style="text-align:center;">
+                            <span id="closed" class="cl" style="color:black;font-weight:bold"> @row1.Total</span>
+                        </td>
+                    }
+                }
+            </tr>
+        </table>
+
+    <table>
+        <tr>
+            <td>
+                <div style="text-align:right">
+                    <span style="color:black;font-weight:bold">TOTAL = </span>
+
+                    <span style="color:black;font-weight:bold"> @ViewData["sum"]</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    
+
+    <div style="font-size:12px;">
+        <table id="Tbl_task" class="table table-bordered" cellspacing="0" style="width:100%;">
+
+            <caption style="color:#7a53f2; font-size:15px"><b>Task Descriptions</b></caption>
+            <thead>
+                <tr style="background-color:#7386D5">
+                    <th style="color:white">SR Number</th>
+                    <th style="color:white">Description</th>
+                    <th style="color:white">Status</th>
+                    <th style="color:white">MID</th>
+                    <th style="color:white">Created By</th>
+                    <th style="color:white">SR Creation Date</th>
+                    <th style="color:white">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in ViewBag.approverTask)
+                {
+                <tr>
+                    <td style="color:blue"><a href="./ExistingSRtoSRDetails?id=@row.SR_Number" id=@row.SR_Number>@row.SR_Number</a></td>
+                    <td title="@row.Description" class="ellipsis first"><span>@row.Description</span></td>
+                    <td>@row.Status</td>
+                    <td>@row.EmployeeID</td>
+                    <td>@row.EmployeeName</td>
+                    <td>@row.Creationdate</td>
+                    <td>Please Take Action Against the @row.Status Service Request </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+   
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function table() {
+           $('#Tbl_task').DataTable({
+            "order": [],
+            dom: 'Bfrtip'
+        });
+        $('.dataTables_length').addClass('bs-select');
+
+    }
+    function Role() {
+        var url = window.location.href;
+        if (url.indexOf('Admin') > -1) {
+            $("#Admin").prop("checked", true);
+        }
+        else {
+            $("#Approver").prop("checked", true);
+        }
+    }
+
+        $(document).ready(function () {
+            $.noConflict();
+            table();
+            Role();
+            $('input[type=radio]').change(function () {
+                if (this.value == 'Admin') {
+                    alert("You will be logged in as Admin");
+                    window.location.href = "/Admin/AdminDashboard";
+                }
+                else if (this.value == 'Approver') {
+                    alert("You will be logged in as Approver");
+                    window.location.href = "/Approver/ApproverDashboard";
+                }
+            });
+      
+
+             $('#SrDashboard a').click(function () {
+
+                 var id = $(this).attr('id');
+
+
+
+
+                 alert("Your page will be navigated to existing Service requests for  " + id);
+
+                $.ajax({
+                     type: "POST",
+                     url: "/Approver/AjaxMethod",
+                     contentType: "application/json; charset=utf-8",
+                     data: "{'id': '" + id + "'}",
+                     dataType: "json",
+                         success: function (response) {
+                             if (response == true) {
+                                 location.href = '@Url.Action("ExistingSR", "Approver")';
+                             }
+                         },
+    error: function() { alert('A error'); }
+});
+
+                    return false;
+
+            });
+        });
+</script>

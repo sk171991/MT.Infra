@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "userDashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    a:hover {
+        background-color: #87ae25;
+    }
+</style>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<link rel="stylesheet" href="~/Content/jquery.dataTables.css">
+<html>
+<body>
+    <table id="SrDashboard" class="table table-bordered" cellspacing="0" style="width:100%;height:5%">
+        <caption style="color:#7a53f2; font-size:15px"><b>Service Request Dashboard</b></caption>
+        <tr>
+            @foreach (var row in ViewBag.Userdash)
+            {
+
+                if (row.Name.Trim() == "Open")
+                {
+                    <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                        <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="Open">OPEN</a></span>
+                    </td>
+                }
+                if (row.Name.Trim() == "Assigned")
+                {
+                    <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                        <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="Assigned">ASSIGNED</a></span>
+                    </td>
+                }
+                if (row.Name.Trim() == "InProgress")
+                {
+                    <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                        <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="InProgress">IN PROGRESS</a></span>
+                    </td>
+
+                }
+
+                if (row.Name.Trim() == "Closed")
+                {
+                    <td style="border-left:solid 1px #000000;background-color:#7386D5;text-align:center">
+                        <span style="color:white;font-weight:bold;width:10EM;cursor:pointer;"><a href="#" id="Closed">CLOSED</a></span>
+                    </td>
+                }
+            }
+        </tr>
+        <tr>
+            @foreach (var row1 in ViewBag.Userdash)
+            {
+                if (row1.Name.Trim() == "Open")
+                {
+                    <td style="text-align:center;">
+                        <span id="open" class="op" style="color:black;font-weight:bold"> @row1.Total</span>
+                    </td>
+                }
+                if (row1.Name.Trim() == "Assigned")
+                {
+                    <td style="text-align:center;">
+                        <span id="assigned" class="As" style="color:black;font-weight:bold"> @row1.Total</span>
+                    </td>
+                }
+                if (row1.Name.Trim() == "InProgress")
+                {
+                    <td style="text-align:center;">
+                        <span id="inprogress" class="IP" style="color:black;font-weight:bold"> @row1.Total</span>
+                    </td>
+                }
+
+                if (row1.Name.Trim() == "Closed")
+                {
+                    <td style="text-align:center;">
+                        <span id="closed" class="cl" style="color:black;font-weight:bold"> @row1.Total</span>
+                    </td>
+                }
+            }
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>
+                <span style="color:black;font-weight:bold">TOTAL</span>
+            </td>
+            <td> &nbsp;</td>
+            <td> = </td>
+            <td> &nbsp; </td>
+            <td>
+                <span style="color:black;font-weight:bold"> @ViewData["sum"]</span>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.noConflict();
+        $('#SrDashboard a').click(function () {
+
+            var id = $(this).attr('id');
+            alert("Your page will be navigated to existing Service requests for " + id);
+
+            $.ajax({
+                type: "POST",
+                url: "/User/AjaxMethod",
+                contentType: "application/json; charset=utf-8",
+                data: "{'id': '" + id + "'}",
+                dataType: "json",
+                success: function (response) {
+                    if (response == true) {
+                        location.href = '@Url.Action("ExistingSR", "User")';
+                    }
+                },
+                error: function () { alert('A error'); }
+            });
+
+            return false;
+
+        });
+    });
+</script>
+

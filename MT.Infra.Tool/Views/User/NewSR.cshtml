@@ -1,0 +1,324 @@
+﻿@model MT.Infra.Tool.Models.ServiceRequest
+
+@{
+    ViewBag.Title = "newSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .areaWidth {
+        width: 280px;
+    }
+
+    .margin {
+        margin-right: 380px;
+    }
+
+    .margins {
+        margin-right: 200px;
+    }
+
+    .required:after {
+        content: "*";
+        font-weight: bold;
+        color: red;
+    }
+
+    .lineabovesubmit {
+        background: url(../images/gray-bar-.png) repeat-x right bottom;
+        height: 2px;
+        margin-top: 30px;
+    }
+
+    .containerr {
+        border: 2px solid #ccc;
+        width: 290px;
+        height: 80px;
+        overflow-y: scroll;
+        /*margin-right: 540px;
+        margin-left: 3px;*/
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .red {
+        font-weight: normal;
+        color: #a94442;
+        font-display: auto;
+    }
+
+    body {
+        overflow: hidden;
+    }
+</style>
+<p style=" font-size: 25px;font-weight:500;">New Service Request</p>
+
+
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery.dataTables.js"></script>
+
+<title>New Service Request</title>
+
+@using (Html.BeginForm("newSR", "User", FormMethod.Post))
+{
+
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal col-md-8" style="font-size:12px; margin-top:-5px;">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SRDate, "SR Date", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-1">
+                <label id="date" class="control-label" style="color:black;font-weight:bold"></label>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="SRArchitecture" class="control-label col-md-2 ">Softwares</label>
+            <div class="col-md-1" style="overflow:auto; width:300px;height:100px;">
+                @foreach (var softwares in ViewBag.Softwares)
+                {
+                    <input id="@softwares.ID" class="dropdown-check-list" type="checkbox" name="software" value="@softwares.Name" onclick="getsoftware()" /> @softwares.Name <br />
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Purpose, "Purpose", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-4">
+                @Html.DropDownList("Purpose", ViewData["Purpose"] as SelectList, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="control-label col-md-2">
+                    @Html.Label("Duration")
+                </div>
+                <table>
+                    <tr>
+                    <tr>
+                        <th>
+                            @Html.LabelFor(model => model.FromDate, "From", htmlAttributes: new { @class = "control-label col-md-4 required" })
+                        </th>
+                        <th>
+                            <div class="col-md-12">
+                                @Html.TextBoxFor(model => model.FromDate, "{0:yyyy-MM-ddThh:mm:ss}", new { id = "fromDate", style = "width:240px;", @class = "form-control", type = "date", onchange = @"setTillDate();" })
+                                @Html.ValidationMessageFor(model => model.FromDate, "", new { @class = "red" })
+                            </div>
+                        </th>
+                        <th>
+                            @Html.LabelFor(model => model.TillDate, "To", htmlAttributes: new { @class = "control-label col-md-4" })
+                        </th>
+                        <th>
+                            <div class="col-md-12">
+                                @Html.TextBoxFor(model => model.TillDate, "{0:yyyy-MM-ddThh:mm:ss}", new { id = "tillDate", style = "width:240px;", @class = "form-control", type = "date" })
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserLocation, "User Location", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-4">
+                @Html.DropDownList("UserLocation", (IEnumerable<SelectListItem>)ViewBag.DropdownVals, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.UserLocation, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactNumber, "Contact Number", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.ContactNumber, new { htmlAttributes = new { placeholder = "+91", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ContactNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SRDescription, "SR Description", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-4">
+                @Html.TextAreaFor(model => model.SRDescription, 5, 100, new { htmlAttributes = new { @class = "scrollabletextbox form-control areaWidth" } })
+                @Html.ValidationMessageFor(model => model.SRDescription, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttachmentName, "Attachment Name", htmlAttributes: new { @class = "control-label col-md-2", @id = "AttachmentName" })
+            <div class="col-md-4">
+                @Html.LabelFor(model => model.Attachment, htmlAttributes: new { @class = "control-label", @id = "Attachment" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button value="Submit" class="btn btn-success" onclick="getSRDesc()">Submit</button>
+                <button type="button" align="center" class="btn btn-success" style="margin-left:2em; padding-right:2em;"><a href="/User/UserDashboard" type="text">Back</a></button>
+            </div>
+        </div>
+        <div class="row">
+            @*<div colspan="auto" class="lineabovesubmit" valign="top">
+                    &nbsp;
+                </div>*@
+            <div>
+                Note:
+                <span style="color:red">*</span>  indicates mandatory field
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+
+        <p>if you wish to add more MIDs in this service request , please click on below button to add MIDs along with employee name</p>
+        <a id="OnBehalf" href="#" class="btn btn-success" style="float:right;">Add MIDs</a>
+
+        <div class="col-md-4" style="padding-top:2em;">
+            <table id="tblUpload" class="table">
+                <caption style="color:#7a53f2; font-size:15px"><b>Only .xlxs/.xls format</b></caption>
+                <tr>
+                    <td>Upload File:</td>
+                    <td>
+                        <input type="file" id="UploadedFile" name="Attachment" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" name="Submit" id="btnUpload" style="float:right">Upload</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="myAlert">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+
+}
+
+
+<script type="text/javascript">
+    var dt = new Date();
+    document.getElementById("date").innerHTML = dt.toLocaleDateString();
+
+
+    function getsoftware() {
+        var abc = ""
+        $('input[type=checkbox]').each(function () {
+            if (this.checked) {
+                abc = abc + $(this).val() + '\n'
+            }
+        });
+        return abc
+        disable();
+    }
+
+    function getSRDesc() {
+        var getSoftwareList = getsoftware();
+        var SRDescription = getSoftwareList + $('#SRDescription').val();
+        $('#SRDescription').val(SRDescription);
+        var retVal = $('#SRDescription').val();
+        return retVal;
+    }
+
+    function setTillDate() {
+        var a = document.getElementById('fromDate').value;
+        var ab = new Date(a);
+        ab = ab.setDate(ab.getDate() + 30);    // 30 days
+        ab = new Date(ab);
+        var newDate = ab.getFullYear() + '-';
+        var month = ab.getMonth() <= 8 ? '0' + (ab.getMonth() + 1) : ab.getMonth() + 1;
+        var day = ab.getDate() <= 9 ? '0' + ab.getDate() : ab.getDate();
+        newDate += month + '-' + day;
+        document.getElementById('tillDate').value = newDate;
+    }
+
+    function filename() {
+        var fileName = $('#UploadedFile')[0].files[0].name;
+        return fileName;
+    }
+
+    $(document).ready(function () {
+
+        $.noConflict();
+        $("#tblUpload").hide();
+        $("#AttachmentName").hide();
+        $("#Attachment").hide();
+        $("#tblUpload").on('click', '#btnUpload', function () {
+            if ($("#UploadedFile").val() == '') {
+                alert('Please select a file.');
+                return false;
+            }
+            var fileUpload = new FormData();
+            var files = $('#UploadedFile')[0].files[0];
+            fileUpload.append("MyFile", files);
+
+            $.ajax({
+                type: "POST",
+                url: "/User/Upload",
+                data: fileUpload,
+                contentType: false,
+                dataType: 'json',
+                processData: false,
+                success: function (response) {
+                    var myhtml = '';
+                    if (response.success) {
+                        alert(response.responseMessage);
+                        $("#btnUpload").attr("disabled", true);
+                        $("#AttachmentName").show();
+                        $('#Attachment').html(filename());
+                        $("#Attachment").show();
+                        $("#tblUpload").hide();
+                    }
+                    else {
+                        myhtml = '<div class="alert alert-danger">' + response.responseMessage + '</div>';
+                    }
+                    $("#myAlert").html(myhtml);
+                    $("#myAlert").fadeIn(500).delay(3000).fadeOut(500);
+                },
+                error: function (error) {
+                    $("#myAlert").html('<div class="alert alert-danger">' + error + '</div>');
+                }
+            });
+        });
+
+
+        $("#OnBehalf").on('click', function () {
+            //  var result = "data:application/vnd.ms-excel,"; --To download empty excel sheet
+            this.href = "../Upload/Empty.xlsx";
+
+            this.download = dt.toLocaleDateString() + "_" + dt.toLocaleTimeString() + ".xlsx";
+
+            alert("Please fill up MID/Name as per the downloaded excelsheet format and upload the same !!!");
+            $("#tblUpload").show();
+
+        });
+
+    });
+
+
+</script>
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                    alert("@ViewBag.Message");
+                    window.location.href = "SRDetails";
+        }
+
+
+    </script>
+
+}

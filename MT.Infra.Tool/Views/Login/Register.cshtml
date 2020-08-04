@@ -1,0 +1,120 @@
+﻿@model MT.Infra.Tool.Models.Register
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Message.cshtml";
+}
+<style>
+    .required:after {
+        content: "*";
+        font-weight: bold;
+        color: red;
+    }
+
+    .lineabovesubmit {
+        background: url(../images/gray-bar-.png) repeat-x right bottom;
+        height: 2px;
+        margin-top: 30px;
+    }
+</style>
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+<h4>New User Registration</h4>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.MID, htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FullName, "Full Name", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, "Email ID", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Register" class="btn btn-success" />
+                <input type="reset" value="Clear" id="reset" class="btn btn-default" />
+            </div>
+        </div>
+        <div>
+            <button type="button">@Html.ActionLink("Back to Login", "Loginform")</button>
+        </div>
+        <div class="row">
+            <div colspan="auto" class="lineabovesubmit" valign="top">
+                &nbsp;
+            </div>
+            <div>
+                Note:
+                <span style="color:red">*</span>  indicates mandatory field
+            </div>
+        </div>
+    </div>
+    if (ViewBag.Register != null)
+    {
+        <script type="text/javascript">
+        $(document).ready(function () {
+          
+            alert('@ViewBag.Register');
+
+            window.location = "/Login/Loginform";
+
+            
+        });
+        </script>
+
+    }
+
+}
+
+

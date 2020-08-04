@@ -1,0 +1,5 @@
+<connectionStrings>
+    <remove name="LocalSqlServer"/>
+    
+    <!--<add name="LocalSqlServer" connectionString="Data Source=G1ML22475;Initial Catalog=AG;User id=sa;Password=Mindtree12;"/>-->
+  </connectionStrings>

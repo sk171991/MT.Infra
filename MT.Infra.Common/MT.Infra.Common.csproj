@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CA5F30EA-ADF5-45D9-B085-14BEFBB714C6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MT.Policy.Common</RootNamespace>
+    <AssemblyName>MT.Policy.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CustomAttribute.cs" />
+    <Compile Include="CustomException.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="FileEngine.cs" />
+    <Compile Include="IBaseContract.cs" />
+    <Compile Include="DAO.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Release\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Release\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Release\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\AG.Policy.Common.dll.lastcodeanalysissucceeded" />
+    <None Include="obj\Debug\AG.Policy.Common.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Debug\build.force" />
+    <None Include="obj\Debug\CoreCompileInputs.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\MT.Infra.Common.csprojAssemblyReference.cache" />
+    <None Include="obj\Debug\MT.Infra.Common.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Release\AG.Policy.Common.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\" />
+    <Folder Include="DBScripts\" />
+    <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="obj\Release\TempPE\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\AG.Policy.Common.dll" />
+    <Content Include="bin\AG.Policy.Common.dll.CodeAnalysisLog.xml" />
+    <Content Include="bin\AG.Policy.Common.pdb" />
+    <Content Include="bin\Dapper.dll" />
+    <Content Include="bin\Dapper.xml" />
+    <Content Include="bin\DuckCreek.DCTServer.Interfaces.dll" />
+    <Content Include="bin\DuckCreek.DCTServer.Lib.dll" />
+    <Content Include="bin\DuckCreek.ServerObj.dll" />
+    <Content Include="bin\DuckCreek.SessionObj.dll" />
+    <Content Include="bin\MT.Policy.Common.dll" />
+    <Content Include="bin\MT.Policy.Common.pdb" />
+    <Content Include="bin\NLog.dll" />
+    <Content Include="bin\NLog.xml" />
+    <Content Include="bin\Release\AG.Policy.Common.dll" />
+    <Content Include="bin\Release\AG.Policy.Common.pdb" />
+    <Content Include="bin\Release\Dapper.dll" />
+    <Content Include="bin\Release\Dapper.xml" />
+    <Content Include="bin\Release\DuckCreek.DCTServer.Interfaces.dll" />
+    <Content Include="bin\Release\DuckCreek.DCTServer.Lib.dll" />
+    <Content Include="bin\Release\DuckCreek.ServerObj.dll" />
+    <Content Include="bin\Release\DuckCreek.SessionObj.dll" />
+    <Content Include="bin\Release\Newtonsoft.Json.dll" />
+    <Content Include="bin\Release\Newtonsoft.Json.xml" />
+    <Content Include="bin\Release\NLog.dll" />
+    <Content Include="bin\Release\NLog.xml" />
+    <Content Include="bin\Release\Renci.SshNet.dll" />
+    <Content Include="bin\Release\Renci.SshNet.xml" />
+    <Content Include="bin\Renci.SshNet.dll" />
+    <Content Include="bin\Renci.SshNet.xml" />
+    <Content Include="Executed\UAT\PolicyXactConnectSQLScripts 2017.09.22.1\AG_SP_GetPolicyInfo_NSD.SQL" />
+    <Content Include="obj\Debug\AG.Policy.Common.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\AG.Policy.Common.dll" />
+    <Content Include="obj\Debug\AG.Policy.Common.pdb" />
+    <Content Include="obj\Debug\MT.Infra.Common.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\MT.Policy.Common.dll" />
+    <Content Include="obj\Debug\MT.Policy.Common.pdb" />
+    <Content Include="obj\Release\AG.Policy.Common.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Release\AG.Policy.Common.dll" />
+    <Content Include="obj\Release\AG.Policy.Common.pdb" />
+    <Content Include="Scripts\jquery-1.8.0.intellisense.js" />
+    <Content Include="Scripts\jquery-1.8.0.js" />
+    <Content Include="Scripts\jquery-1.8.0.min.js" />
+    <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

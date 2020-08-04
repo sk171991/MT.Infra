@@ -1,0 +1,112 @@
+﻿@model MT.Infra.Tool.Models.Register
+
+@{
+    ViewBag.Title = "Reset";
+    Layout = "~/Views/Shared/_Message.cshtml";
+}
+    <style>
+    .required:after {
+        content: "*";
+        font-weight: bold;
+        color: red;
+    }
+
+    </style>
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+<h2>Reset</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email,"Email ID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password,"New Password", htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Change Password" class="btn btn-success" id="ChangePwd" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to Login", "Loginform")
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.noConflict();
+
+            if ('@ViewBag.Email' != '') {
+
+                var email = '@ViewBag.Email';
+                $("#Email").val(email);
+                $("#Email").attr("disabled", "disabled");
+            }
+            else {
+                alert("Please fill the blank mandatory fields");
+            }
+
+            $("#ChangePwd").on('click', function () {
+
+                var Register = {};
+                Register.Email = $("#Email").val();
+                Register.Password = $("#Password").val();
+                Register.ConfirmPassword = $("#ConfirmPassword").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Login/Reset",
+                    data: '{Register: ' + JSON.stringify(Register) + '}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response == true) {
+                            alert("Password changed successfully !! Please try login with your new Password");
+                            window.location = "/Login/Loginform";
+                        }
+
+                    else if(response == false){
+                            alert("Something went wrong . Please try again to change your Password ");
+                            $("#Password").val('');
+                            $("#ConfirmPassword").val('');
+                        }
+                        else {
+                            alert(response.error);
+                        }
+                    },
+                     error: function () { alert('A error'); }
+                });
+            });
+            });
+</script>

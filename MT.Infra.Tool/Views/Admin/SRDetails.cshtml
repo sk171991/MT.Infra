@@ -1,0 +1,540 @@
+﻿@model MT.Infra.Tool.Models.ApproverSRDetails
+
+
+@{
+    ViewBag.Title = "SRDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var message = TempData["AlertMessage"] ?? string.Empty;
+
+}
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/a076d05399.js"></script>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+<style>
+    .tooltip-wrap {
+        position: relative;
+    }
+
+        .tooltip-wrap .tooltip-content {
+            display: none;
+            position: absolute;
+            width: 500px;
+            bottom: 100%;
+            left: 1%;
+            right: 1%;
+            background-color: #fff;
+            padding: .5em;
+        }
+
+        .tooltip-wrap:hover .tooltip-content {
+            display: block;
+            position: absolute;
+            width: 300px;
+            left: 1%;
+            right: 1%;
+            color: #ffffff;
+            padding: .5em;
+        }
+</style>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div style="font-size:12px;color:black">
+    @if (@ViewBag.errmsg != null)
+    {
+        <span id="errmsg" style="color: red;">@ViewBag.errmsg</span>
+    }
+    <div class="form-group row">
+        <h4></h4>
+        @foreach (var SRDetail in ViewBag.SRDetails)
+        {
+            ViewData["SRID"] = @SRDetail.ServiceRequest_ID;
+            <h4 class="col-sm-7">SR Details for SR Number : @SRDetail.ServiceRequest_ID </h4>
+            <h4 class="col-sm-5" style="text-align:right">SR Created Date : @SRDetail.CreatedDate.ToShortDateString() </h4>
+        }
+    </div>
+
+    <table class="table table-borderless" align="center">
+        <tbody class="col-sm-12">
+            <tr>
+                <th class="col-sm-2">
+                    <label>SR Raised By:</label>
+                </th>
+                <td class="col-sm-3" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.Name</span>
+                    }
+                </td>
+
+                <th class="col-sm-2">
+                    <label>User Location:</label>
+                </th>
+                <td class="col-sm-3" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.UserLocation</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th class="col-sm-2">
+                    <label>User Contact No:</label>
+                </th>
+                <td class="col-sm-3" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.ContactNumber</span>
+                    }
+                </td>
+                <th class="col-sm-2">
+                    <label>Asset Usage Type:</label>
+                </th>
+                <td class="col-sm-3" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.AssetUsageType</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th class="col-sm-2">
+                    <label>Assigned To:</label>
+                </th>
+                <td class="col-sm-2" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.AssignedTo (@SRDetail.Role)</span>
+                    }
+                </td>
+                <th class="col-sm-2">
+                    <label>Status:</label>
+                </th>
+                <td class="col-sm-2" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <label id="status">@SRDetail.statusName</label>
+                        <select id="Statuses">
+                            <option value="@SRDetail.statusName">@SRDetail.statusName</option>
+
+                            @foreach (var statuses in ViewBag.NextStatus)
+                            {
+                                if (@statuses.Text != @SRDetail.statusName)
+                                {
+                                    <option value="@statuses.Text">@statuses.Text</option>
+
+                                }
+                            }
+                        </select>
+                        @Html.HiddenFor(m => m.selectStatus)
+                        <span class="tooltip-wrap" id="icon" align="center">
+                            <img src="~/Images/status.png" alt="Some Image" />
+                            <span class="tooltip-content">
+                                <p>@ViewBag.statushelper</p>
+                            </span>
+                        </span>
+                    }
+                </td>
+
+            </tr>
+            <tr>
+                <th class="col-sm-2">
+                    <label>From Date:</label>
+                </th>
+                <td class="col-sm-3" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.FromDate</span>
+                    }
+                </td>
+
+                <th class="col-sm-2">
+                    <label>Till Date:</label>
+                </th>
+                <td class="col-sm-3" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <span>@SRDetail.TillDate</span>
+                    }
+                </td>
+            </tr>
+
+            <tr>
+                <th class="col-sm-2">
+                    <label>SR Description:</label>
+                </th>
+                <td class="col-sm-4" align="left">
+                    @foreach (var SRDetail in ViewBag.SRDetails)
+                    {
+                        <textarea rows="3" cols="40" style="color:black;overflow-y:scroll" readonly>@SRDetail.SRDescription</textarea>
+                    }
+                </td>
+                <th class="col-sm-2">
+                    @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label" })
+                </th>
+                <td class="col-sm-4" align="left">
+
+                    @Html.TextAreaFor(model => model.Comments, 2, 80, new { @class = " scrollabletextbox form-control areaWidth", @id = "txtComments" })
+                    @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+                </td>
+                <td class="col-sm-4" align="left">
+                    <input type="button" value="Asset Assignment" class="btn btn-success" id="Assetasgn" onclick="AssetAssign()" />
+                </td>
+            </tr>
+            <tr>
+                <th class="col-sm-2">
+                    <label id="Attachment">Requested MIDs:</label>
+                </th>
+                <td class="col-sm-2" align="left">
+                    @foreach (var items in ViewBag.Attachment)
+                    {
+                        @items.fileName<a class="btn btnDownload" id="@items.fileName" href="#"><i class="fa fa-download"></i></a>
+                    }
+                </td>
+                <td class="col-sm-4 AssetList">
+                    <label id="Assets">Resources Assigned:</label>
+                </td>
+                <td class="col-sm-2" align="left">
+                    <input type="button" id="BtnAssets" data-toggle="modal" data-target="#AssetList" value="Assets Assigned">
+                    <input type="button" id="BtnAssetMIDList" data-toggle="modal" data-target="#AssetMIDList" value="MID Assigned">
+                </td>
+
+
+            </tr>
+
+        </tbody>
+    </table>
+
+    <!-- Asset List Modal -->
+    <div class="modal fade" id="AssetList" role="dialog">
+        <div class="modal-dialog" style="width:1200px">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">List of Assets Assigned to this Request <label class="Astname"></label></h4>
+                </div>
+                <div class="modal-body">
+
+                    <table id="AssetAssign" class="table table-bordered" style="width:100%">
+                        <caption style="color:#7a53f2; font-size:20px"><b>Assets Details</b></caption>
+                        <thead>
+                            <tr style="background-color:#7386D5">
+                                <th>AssetName</th>
+                                <th>IP Address</th>
+                                <th>Asset Type</th>
+                                <th>Asset Expiry Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (ViewBag.AssetName != null)
+                            {
+                                foreach (var items in ViewBag.AssetName)
+                                {
+
+                                    <tr>
+                                        <td>@items.SystemName</td>
+                                        <td>@items.SystemIP</td>
+                                        <td>@items.MachineType</td>
+                                        <td>@items.ExpirationDate.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>Not Assigned</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asset MID List Modal -->
+    <div class="modal fade" id="AssetMIDList" role="dialog">
+        <div class="modal-dialog" style="width:1200px">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">List of MIDs along with the Assets <label class="Astname"></label></h4>
+                </div>
+                <div class="modal-body">
+
+                    <table id="AssetAssign" class="table table-bordered" style="width:100%">
+                        <caption style="color:#7a53f2; font-size:20px"><b>Asset MID Details</b></caption>
+                        <thead>
+                            <tr style="background-color:#7386D5">
+                                <th>Asset Name</th>
+                                <th>Asset Type</th>
+                                <th>MID</th>
+                                <th>Employee Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (ViewBag.AssetMIDList != null)
+                            {
+                                foreach (var items in ViewBag.AssetMIDList)
+                                {
+
+                                    <tr>
+                                        <td>@items.AssetName</td>
+                                        <td>@items.Category</td>
+                                        <td>@items.MID</td>
+                                        <td>@items.EmployeeName</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>Not Assigned</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        @foreach (var SRDetail in ViewBag.SRDetails)
+        {
+            if (SRDetail.statusName == "Open      ")
+            {
+                <table class="col-sm-12" align="center">
+                    <tbody class="col-sm-12">
+                        <tr>
+                            <td class="col-sm-5"></td>
+                            <td class="col-sm-2">
+                                <input type="submit" value="Approve" class="btn btn-success" name="approvesr" />
+                            </td>
+                            <td style="padding-left:5em" class="col-sm-5">
+                                <input type="submit" value="Reject" class="btn btn-danger" name="rejectsr" onclick="closeFunction()" />
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <table class="col-sm-12" align="center">
+                    <tbody class="col-sm-12">
+                        <tr>
+                            <td class="col-sm-4"></td>
+
+                            <td style="padding-left:5em" class="col-sm-12">
+                            </td>
+                            <td style="padding-left:5em" class="col-sm-12">
+                                <input type="submit" value="Save" class="btn btn-success" id="Save" onclick="SaveButton()" style="display:none;" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+    <h4 class="col-sm-4">Ticket History</h4>
+
+    <table class="table table-bordered" align="center" style="overflow-y:scroll">
+        <tbody>
+            <tr style="background-color:#7386D5">
+                <th class="col-sm-2" style="text-align:center">Response Date</th>
+                <th class="col-sm-1" style="text-align:center">Status</th>
+                <th class="col-sm-2" style="text-align:center">Assigned To</th>
+                <th class="col-sm-2" style="text-align:center">Role</th>
+                <th class="col-sm-4" style="text-align:center">Comments</th>
+            </tr>
+
+            @foreach (var TicketHistory in ViewBag.TicketHistory)
+            {
+                <tr>
+                    <td class="col-sm-2" style="text-align:center">
+                        <span>@TicketHistory.LastModifiedTimeStamp</span>
+                    </td>
+                    <td class="col-sm-1" style="text-align:center">
+                        <span>@TicketHistory.StatusName</span>
+                    </td>
+                    <td class="col-sm-2" style="text-align:center">
+                        <span>@TicketHistory.UserName</span>
+                    </td>
+                    <td class="col-sm-2" style="text-align:center">
+                        <span>@TicketHistory.UserRole</span>
+                    </td>
+                    <td class="col-sm-4">
+                        <span>@TicketHistory.Comments</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+    <script type="text/javascript">
+
+        function Assettable() {
+            $('#AssetAssign').DataTable();
+             $('.dataTables_length').addClass('bs-select');
+        }
+        function closeFunction() {
+            var reason = prompt("Reason for Rejecting this SR:");
+            document.getElementById("txtComments").innerHTML = reason;
+        }
+        function AssetAssignButton() {
+            var status = $('#status').text();
+            if (status.trim() == 'InProgress' && $('#AssetAssigned').text() == '') {
+                $('#Assetasgn').show();
+            }
+            else {
+                $('#Assetasgn').hide();
+            }
+
+        }
+        function AssetAssign() {
+            var SRID = '@ViewData["SRID"]';
+            var id = btoa(SRID);
+            window.location.href = "/Admin/ViewAsset?" + id;
+        }
+        function NextStatusShow() {
+                if ($('#status').text() != 'Open' && $('#status').text() != 'Closed' && $('#status').text() != 'Cancel') {
+                    $('#status').hide();
+                    $('#Statuses').show();
+                    $('#icon').hide();
+                    $('#txtComments').val('');
+
+                }
+                else {
+                     $('#txtComments').attr("disabled", "disabled");
+                    $('#Statuses').hide();
+
+                }
+            }
+        function SaveButton() {
+                var select = "";
+                $('#Statuses option:selected').each(function () {
+                    select = $(this).text();
+                    $("#selectStatus").val(select);
+                });
+                //alert("Status has been changed to" + "" + select + "" + "and successfully saved to database");
+                   if (select == "InProgress") {
+                       $('#Assetasgn').show();
+                        if ($('#txtComments').val() == '') {
+                            $('#txtComments').val("Ticket is now in Progess by Admin Team");
+
+                }
+                   }
+            else if (select == "Closed") {
+                       $('#Assetasgn').show();
+                        if ($('#txtComments').val() == '') {
+                            $('#txtComments').val("Ticket  has been marked closed by Admin Team");
+
+                }
+                          }
+                   else {
+                       $('#Assetasgn').hide();
+                }
+
+
+            }
+        function alertMsg() {
+               var message = '@message';
+                    if (message) {
+                        alert(message);
+                        $('#Save').hide();
+                    }
+
+            }
+        function Assets() {
+                if (@ViewBag.AssetName.Count != 0) {
+                    $(".AssetList").show();
+                    $("#BtnAssets").show();
+                }
+                else {
+                    $(".AssetList").hide();
+                    $("#BtnAssets").hide();
+                }
+            }
+        function AssetMIDList() {
+                if (@ViewBag.AssetMIDList.Count != 0) {
+                    $(".AssetList").show();
+                    $("#BtnAssetMIDList").show();
+                }
+                else {
+                    $(".AssetList").hide();
+                    $("#BtnAssetMIDList").hide();
+                }
+        }
+
+                  $(document).ready(function () {
+                      $.noConflict();
+                      Assets();
+                      AssetMIDList();
+                      Assettable();
+                      AssetAssignButton();
+                      if ('@ViewBag.AssetName.Count' == 0) {
+                          var html = "<tr><td>Asset not yet Assigned</td></tr>";
+                          $("#AssetAssign tbody").append(html);
+                      }
+                      NextStatusShow();
+                      $("#Statuses").change(function () {
+                          var selected = "";
+                          $('#Statuses option:selected').each(function () {
+                              selected = $(this).text();
+                              if (selected == "InProgress") {
+                                  $('#Save').show();
+                                      $('#Assetasgn').show();
+                          }
+                              else if (selected == "Closed") {
+                                  $('#Save').show();
+                                  $('#Assetasgn').hide();
+                              }
+                              else
+                              {
+                                  $('#Save').hide();
+                              $('#Assetasgn').hide();
+                          }
+                          });
+                      });
+                        setTimeout(function(){ alertMsg();}, 300)
+                       if (@ViewBag.Attachment.Count == 0) {
+                $("#Attachment").hide();
+            }
+            else {
+                 $("#Attachment").show();
+            }
+
+            $(".btnDownload").on('click', function () {
+                 var filename = this.id;
+                 var path = "../Upload/" + filename;
+                 this.href = path;
+                 this.Download = filename;
+                 alert("Requested file has been downloaded successfully");
+             });
+
+                       });
+    </script>
+</div>
+}
+

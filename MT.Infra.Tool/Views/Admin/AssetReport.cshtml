@@ -1,0 +1,215 @@
+﻿@model MT.Infra.BusinessLayer.AssetsManagement.AssetReports
+
+@{
+    ViewBag.Title = "AssetReport";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var message = TempData["Search"] ?? string.Empty;
+}
+
+<p style=" font-size: 25px;font-weight:500;">Asset Report</p>
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/buttons.flash.min.js"></script>
+<script src="~/Scripts/jszip.min.js"></script>
+<script src="~/Scripts/pdfmake.min.js"></script>
+<script src="~/Scripts/vfs_fonts.js"></script>
+<script src="~/Scripts/buttons.html5.min.js"></script>
+<script src="~/Scripts/buttons.print.min.js"></script>
+<script src="~/Scripts/buttons.colVis.min.js"></script>
+<link rel="stylesheet" href="~/Scripts/buttons.dataTables.min.css">
+<style>
+.first {
+    width: 40%;
+}
+.ellipsis {
+    position: relative;
+}
+.ellipsis:before {
+    content: '&nbsp;';
+    visibility: hidden;
+}
+.ellipsis span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+table
+        {
+            width: 100%;
+        }
+</style> 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.ServiceRequestID, "ServiceRequest ID", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.ServiceRequestID, new { htmlAttributes = new { @class = "form-control",placeholder = "SR000000X" } })
+            @Html.ValidationMessageFor(model => model.ServiceRequestID, "", new { @class = "text-danger" })
+        </div>
+        @Html.LabelFor(model => model.AssetName, "Asset Name", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.AssetName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.AssetName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.TillDate, "SR Till Date", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.TillDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.ValidationMessageFor(model => model.TillDate, "", new { @class = "text-danger" })
+        </div>
+        @Html.LabelFor(model => model.ExpirationDate, "Asset Expiry Date", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.ExpirationDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
+        </div>
+       
+        </div>
+
+       
+    <div class="form-group">
+            @Html.LabelFor(model => model.Category, "Asset Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewBag.MachineType, "--Choose Type--", new { htmlAttributes = new { @class = "form-control"}})
+            </div>
+        </div>
+   
+
+    <div class="form-group">
+            <div style="text-align:center">
+                <input type="submit" ID="Search" value="Search" class="btn btn-success" onclick="EmptyAlert()" />
+                <button id="Reset" class="btn" type="button" onclick="window.location.href ='/Admin/AssetReport'">Reset</button>
+            </div>
+
+        </div>
+    </div>
+    <table id="tableID" class="table table-bordered" cellspacing="0" style="width:100%;">
+        <thead>
+            <tr style="background-color:#7386D5">
+                <th style="color:#000000">ServiceRequestID</th>
+                <th style="color:#000000">SR Description</th>
+                <th style="color:#000000">SR CreatedBy</th>
+                <th style="color:#000000">SR Created Date</th>
+                <th style="color:#000000">SR Start Date</th>
+                <th style="color: #000000">SR End Date</th>
+                <th style="color:#000000">AssetName</th>
+                <th style="color:#000000">IPAddress</th>
+                <th style="color:#000000">Category</th>
+                <th style="color:#000000">Asset Expiry</th>
+                <th style="color:#000000">TaggedMID</th>
+                <th style="color:#000000">EmployeeName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.AssetReport != null)
+            {
+                foreach (var row in ViewBag.AssetReport)
+                {
+            <tr>
+                <td style="color:blue" id="SRID"><a href="./ExistingSRtoSRDetails?id=@row.ServiceRequestID"><b>@row.ServiceRequestID</b></a></td>
+                <td title="@row.SRDescription" class="ellipsis first"><span>@row.SRDescription</span></td>
+                <td>@row.SRCreatedBy</td>
+                <td>@row.SRCreatedTimeStamp.ToShortDateString()</td>
+                <td>@row.FromDate.ToShortDateString()</td>
+                <td>@row.TillDate.ToShortDateString()</td>
+                <td>@row.AssetName</td>
+                <td>@row.IPAddress</td>
+                <td>@row.Category</td>
+                <td>@row.ExpirationDate.ToShortDateString()</td>
+                <td>@row.MID</td>
+                <td>@row.EmployeeName</td>
+            </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    Records to be Displayed on SEARCH
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+
+        function getDate() {
+            var d = new Date($.now());
+            var dt = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "_" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+            return dt;
+        }
+        function SearchTable() {
+
+            $('#tableID').DataTable({
+                dom: 'Bfrtip',
+                columnDefs: [
+                    {
+                        targets: 1,
+                        className: 'noVis'
+                    }
+                ],
+                buttons: [{
+                    extend: 'colvis',
+                    text: 'Column Selection',
+                    //columns: ':not(.noVis)',
+
+                },
+                {
+                    extend: 'collection',
+                    text: 'Export Options',
+                    buttons: [{
+                        extend: 'pdf',
+                        filename: function () { return getDate(); },
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: "thead th:not(.noExport)"
+                        }
+                    }, {
+                        extend: 'excel',
+                        filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: "thead th:not(.noExport)"
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: "thead th:not(.noExport)"
+                        }
+                    }
+                    ]
+                }
+                ]
+            });
+            $('.dataTables_length').addClass('bs-select');
+
+
+        }
+        function alertMsg() {
+               var message = '@message';
+                    if (message) {
+                        alert(message);
+                        
+                    }
+
+            }
+        $(document).ready(function () {
+            $.noConflict();
+            SearchTable();
+           setTimeout(function(){ alertMsg();}, 300)
+        });
+    </script>
+    }

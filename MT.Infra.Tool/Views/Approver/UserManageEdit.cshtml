@@ -1,0 +1,133 @@
+﻿@model MT.Infra.BusinessLayer.Viewusermodel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_ApproverLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>User Edit</title>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <style>
+        .Col1 {
+            /*border: 1px solid #ff0000;*/
+            margin-top: 7px;
+            text-align: left;
+        }
+
+        .Col2 {
+            margin-top: 7px;
+        }
+
+        .drop {
+            width: 300px;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="panel responsive">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @*<div class="form-horizontal">*@
+            <h4>User Update </h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-2 col-xs-2 Col1" style="">
+                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-md-6 col-xs-6 Col2">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" }, @id = "txtname" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-2 col-xs-2 Col1 ">
+                        @Html.LabelFor(model => model.EmployeeID, htmlAttributes: new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-md-6 col-xs-6 Col2">
+                        @Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { @class = "form-control", @id = "txtname" } })
+                        @Html.ValidationMessageFor(model => model.EmployeeID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-2 col-xs-2 Col1">
+                        @Html.LabelFor(model => model.ContactNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-md-6 col-xs-6 Col2">
+                        @Html.EditorFor(model => model.ContactNumber, new { htmlAttributes = new { @class = "form-control", @id = "txtname" } })
+                        @Html.ValidationMessageFor(model => model.ContactNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-2 col-xs-2 Col1">
+                        @Html.LabelFor(model => model.UserLocation, htmlAttributes: new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-md-6 col-xs-6 Col2">
+                        @Html.DropDownListFor(model => model.UserLocation, (IEnumerable<SelectListItem>)ViewBag.DropdownLocation, "--Select Location--", new { @class = "form-control drop" })
+                        @Html.ValidationMessageFor(model => model.UserLocation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-2 col-xs-2 Col1">
+                        @Html.LabelFor(model => model.EmailId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-md-6 col-xs-6 Col2">
+                        @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control", @id = "txtname" } })
+                        @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-2 col-xs-2 Col1">
+                        @Html.LabelFor(model => model.UserRole, htmlAttributes: new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-md-6 col-xs-6 Col2">
+
+                        @Html.DropDownListFor(model => model.Role_ID, ViewData["Roles"] as SelectList, "----Choose Role----", new {required = "Required", @class = "form-control drop" })
+
+                        @Html.ValidationMessageFor(model => model.UserRole, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-offset-4 col-md-1 col-xs-1 Col1">
+                        <table>
+                            <tr>
+                                <td>
+                                    <input type="submit" value="Update" class="btn btn-success" id="Submituser" />
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <button class="btn btn-success"> @Html.ActionLink("Back to List", "UserManagement")</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>

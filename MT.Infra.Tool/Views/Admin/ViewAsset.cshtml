@@ -1,0 +1,747 @@
+﻿@model MT.Infra.BusinessLayer.AssetsManagement.Asset
+@{
+    ViewBag.Title = "View Asset Details";
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<p style=" font-size: 25px;font-weight:500;">View Asset Details</p>
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/buttons.flash.min.js"></script>
+<script src="~/Scripts/jszip.min.js"></script>
+<script src="~/Scripts/pdfmake.min.js"></script>
+<script src="~/Scripts/vfs_fonts.js"></script>
+<script src="~/Scripts/buttons.html5.min.js"></script>
+<script src="~/Scripts/buttons.print.min.js"></script>
+<script src="~/Scripts/buttons.colVis.min.js"></script>
+<link rel="stylesheet" href="~/Scripts/buttons.dataTables.min.css">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.SystemName, "System Name", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.SystemName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.SystemName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.RegistrationDate, "Registration Date", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.ValidationMessageFor(model => model.RegistrationDate, "", new { @class = "text-danger" })
+        </div>
+
+        @Html.LabelFor(model => model.ExpirationDate, "Expiration Date", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.EditorFor(model => model.ExpirationDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+            @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.MachineType, "Machine Type", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.DropDownList("MachineType", (IEnumerable<SelectListItem>)ViewBag.MachineType, "--Choose Type--")
+        </div>
+
+        @Html.LabelFor(model => model.Status, "Asset Status", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-4">
+            @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.AssetStatus, "----Select----")
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <div style="text-align:center">
+            <input type="submit" ID="Search" value="Search" class="btn btn-success" onclick="" />
+
+            <button id="Reset" class="btn" type="button" onclick="window.location.href ='/Admin/ViewAsset'">Reset</button>
+
+            <input type="button" value="Back" class="btn btn-success" id="BtnBack" onclick='window.location.href="/Admin/SRDetails"' ; />
+
+        </div>
+
+    </div>
+
+    <div>
+        <table id="tableID" class="table table-bordered" cellspacing="0" style="width:100%;margin-left:20px;">
+
+            <caption style="color:#7a53f2; font-size:20px"><b>Assets Details</b></caption>
+            <thead>
+                <tr style="background-color:#7386D5">
+                    <th style="color:white">System Name</th>
+                    <th style="color:white">SystemIP</th>
+                    <th style="color:white">SerialNumber</th>
+                    <th style="color:white">Machine Code</th>
+                    <th style="color:white">Machine Type</th>
+                    <th style="color:white">Registration Date</th>
+                    <th style="color:white">Expiration Date</th>
+                    <th style="color:white">Service Request</th>
+                    <th style="color:white">Asset Assigned Timestamp</th>
+                    <th style="color:white">Asset Software Mapping </th>
+                    <th style="color:white">Asset MID Mapping</th>
+                    <th style="color:white">Action</th>
+                </tr>
+            </thead>
+            <tbody id="tblAssets">
+                @foreach (var row in ViewBag.AssetDetails)
+                {
+                    <tr>
+
+                        <td id="Name">@row.SystemName</td>
+                        <td>@row.SystemIP</td>
+                        <td>@row.SerialNumber</td>
+                        <td>@row.MachineCode</td>
+                        <td>@row.MachineType</td>
+                        <td>@row.RegistrationDate.ToShortDateString()</td>
+                        <td>@row.ExpirationDate.ToShortDateString()</td>
+                        <td style="color:blue" id="SRID"><a href="./ExistingSRtoSRDetails?id=@row.ServiceRequestID"><b>@row.ServiceRequestID</b></a></td>
+                        <td>@row.AssignedDate</td>
+                        <td style="white-space:nowrap;">
+                            <input type="button" id="@row.ID" onclick="" class="btnAddSoftware btn-xs btn-success" value="View & Edit" data-toggle="modal" data-target="#myModal" />
+                        </td>
+                        <td style="white-space:nowrap;">
+                            <input type="button" id="@row.ID" onclick="" class="btnMIDTag btn-xs btn-success" value="View & Edit" data-toggle="modal"/>
+                        </td>
+                        <td style="white-space:nowrap;">
+                            <input type="button" id="@row.ID" onclick="" class="btnassign btn-xs btn-success" value="Assign" />
+                            <input type="button" onclick="return AssetUnassign(@row.ID);" class="btnUnassign btn-xs btn-danger" value="Unassign" />
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+    <!-- myModal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog" style="width:1200px">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title">Software Asset Configuration for  <label class="AssetName"></label></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table id="tblSoftware" class="table table-bordered" cellspacing="0" style="width:100%;" align="left">
+                                <caption style="color:#7a53f2; font-size:15px"><b>Software Not Assigned to this Asset</b></caption>
+
+                                <thead>
+                                    <tr style="background-color:#7386D5">
+                                        <th style="color:white">Software Name</th>
+                                        <th style="color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table id="tblAssetSoftware" class="table table-bordered" cellspacing="0" style="width:100%;" align="right">
+                                <caption style="color:#7a53f2; font-size:15px"><b>Software Assigned to this Asset</b></caption>
+
+                                <thead>
+                                    <tr style="background-color:#7386D5">
+                                        <th style="color:white">Software Name</th>
+                                        <th style="color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AssetMIDModal -->
+    <div class="modal fade" id="AssetMID" role="dialog">
+        <div class="modal-dialog" style="width:1200px">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tag MID against Asset :  <label class="Astname"></label></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table id="tblMID" class="table table-bordered" cellspacing="0" style="width:100%;" align="left">
+                                <caption style="color:#7a53f2; font-size:15px"><b>MID requested for <label class="SRID"></label></b></caption>
+
+                                <thead>
+                                    <tr style="background-color:#7386D5">
+                                        <th style="color:white">MID</th>
+                                        <th style="color:white">Name</th>
+                                        <th style="color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table id="tblAssetMID" class="table table-bordered" cellspacing="0" style="width:100%;" align="right">
+                                <caption style="color:#7a53f2; font-size:15px"><b>MID Assigned to this Asset</b></caption>
+
+                                <thead>
+                                    <tr style="background-color:#7386D5">
+                                        <th style="color:white">MID</th>
+                                        <th style="color:white">Name</th>
+                                        <th style="color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+             function getDate() {
+            var d = new Date($.now());
+            var dt = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "_" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+           return dt;
+        }
+
+                function SearchTable() {
+
+                    $('#tableID').DataTable({
+                        drawCallback: function () {
+                            $(function () {
+                                Btnassign();
+
+                            });
+                        },
+
+                         dom: 'Bfrtip',
+                columnDefs: [
+                    {
+                        targets: 1,
+                        className: 'noVis'
+                    }
+                ],
+                buttons: [{
+                    extend: 'colvis',
+                    text: 'Column Selection',
+                   columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8]
+                
+                   	//columns: ':eq(3),:eq(5),:eq(9)'
+                },
+                {
+                    extend: 'collection',
+                    text: 'Export Options',
+                    buttons: [{
+                        extend: 'pdf',
+                        filename: function () { return getDate(); },
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    }, {
+                        extend: 'excel',
+                            filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                        },
+                        {
+                            extend: 'csv',
+                            filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8]
+                        }
+                    }
+                    ]
+                    }
+                ]
+                    });
+                }
+
+                function BtnforSR() {
+                    $('#BtnBack').show();
+                    $('#Reset').hide();
+                      $('#tableID tr').each(function (e) {          //loop all tr's
+                          if ($(this).children(':nth-child(8)').text() === '') {
+                              $(this).find('.btnassign').show();
+                              $(this).find('.btnUnassign').hide();
+                          }
+                          else
+                          {
+                              $(this).find('.btnassign').hide();
+
+                          }
+
+
+                      });
+                  }
+
+                function BtnforView() {
+                    $('#Reset').show();
+                    $('#BtnBack').hide();
+                      $('#tableID tbody tr').each(function (e) {          //loop all tr's
+                          if ($(this).children(':nth-child(8)').text() === '') {
+                              $(this).closest('tr').find('.btnassign').hide();
+                              $(this).closest('tr').find('.btnUnassign').hide();
+
+
+                          }
+                          else {
+                              $(this).find('.btnassign').hide();
+                              $(this).find('.btnUnassign').show();
+                          }
+
+
+                      });
+            }
+
+                  function Btnassign() {
+
+
+                      if (window.location.href.indexOf("?") != -1)
+                      {
+                          BtnforSR();
+                      }
+                      else
+                      {
+                          BtnforView();
+                      }
+                }
+
+                  function AssetAssign(AssetName,AssetId)
+                  {
+                      var url = window.location.href;
+                      var arguments = url.substr(url.indexOf("?") + 1);
+                      var encoded = atob(arguments);
+                      var id = encoded.substring(8);
+                      var SRID = id;
+                      if (confirm('The Asset will be assigned against the Service Request' + ' ' + 'SR000000'+SRID) == true)
+                      {
+
+                         try {
+
+                             $.ajax({
+                        type: "POST",
+                        url: "/Admin/AssetAssign",
+                        contentType: "application/json; charset=utf-8",
+                        data: "{'SRID':'" + SRID + "','AssetId': '" + AssetId + "','AssetName': '" + AssetName + "'}",
+                        dataType: "json",
+                        success: function (response) {
+
+                            alert("Asset has been successfully assigned to the Service Request " + 'SR000000' + SRID);
+                            window.location.href = window.location.href;
+                        },
+                        error: function () { alert('A error'); }
+                    });
+
+
+
+                          }
+                          catch (err) {
+                              alert("Asset cannot be assigned due to change in URL");
+                          }
+                      }
+                  }
+                function AssetUnassign(id) {
+
+                    if (confirm('The Asset will be unassigned against the Service Request') == true)
+                    {
+
+                        location.href='@Url.Action("AssetUnassign", "Admin")?ID=' + id;
+                        alert("Asset has been successfully unassigned to the Service Request");
+                        //window.location.href = "/Infra/ViewAsset";
+                        window.location.href = window.location.href;
+                      }
+                  }
+
+                function ViewSoftwares(AssetID) {
+
+                  $.ajax({
+                        type: "POST",
+                        url: "/Admin/ViewSoftwares",
+                        contentType: "application/json; charset=utf-8",
+                        data: "{'AssetID': '" + AssetID + "'}",
+                        dataType: "json",
+                      success: function (response) {
+                          if (response !== false) {
+                              $("#tblAssetSoftware tbody").empty();
+                              for (var i = 0; i < response.length; i++) {
+                                  var html =
+                                      '<tr><td id="Name">' + response[i].Name + '</td>' + '<td>' +
+                                      "<button id ='" + response[i].ID + "'type='button' title='UnTag' class='btn btn-danger btnUnTag' onclick=''>UnTag</button></td></tr>";
+                                  $("#tblAssetSoftware tbody").append(html);
+
+                              }
+                             $("#tblAssetSoftware").DataTable({
+    "bSort":false,
+      "bPaginate":true,
+});
+
+                          }
+                          else {
+                              $("#tblAssetSoftware tbody").empty();
+                              $("#tblAssetSoftware tbody").append("No Data Available");
+                              $("#tblAssetSoftware").DataTable({
+   "bSort":false,
+      "bPaginate":true,
+});
+                          }
+                        },
+                        error: function () { alert('A error'); }
+                    });
+
+                }
+
+                function AddSoftwares(AssetID) {
+
+                            ViewSoftwares(AssetID);
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/AddSoftwares",
+                        contentType: "application/json; charset=utf-8",
+                        data: "{'AssetID': '" + AssetID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                            $("#tblSoftware tbody").empty();
+                            for (var i = 0; i < response.length; i++) {
+                                var html =
+                                    '<tr><td id="Name">' + response[i].Name + '</td>' + '<td>' +
+                                   "<button id ='"+ response[i].ID + "'type='button' title='Select' class='btn btn-success btnTag' onclick=''>Tag</button></td></tr>";
+                                $("#tblSoftware tbody").append(html);
+
+                            }
+                            $("#tblSoftware").DataTable({"bPaginate":true});
+
+                        },
+                        error: function () { alert('A error'); }
+                    });
+
+
+                }
+
+               function TagSoftware(SoftwareID) {
+                   var AssetID = $(".AssetName").attr("ID");
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/TagSoftware",
+                        contentType: "application/json; charset=utf-8",
+                        data: "{'AssetID':'" + AssetID + "','SoftwareID': '" + SoftwareID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                            DestroyAssetSoftwareTable();
+                            AddSoftwares(AssetID);
+                            alert("Software has been Tagged to this Asset");
+                        },
+                        error: function () { alert('A error'); }
+                    });
+
+
+            }
+
+               function UnTagSoftware(SoftwareID)
+        {
+
+                   var AssetID = $(".AssetName").attr("ID");
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/UnTagSoftware",
+                        contentType: "application/json; charset=utf-8",
+                        data: "{'AssetID':'" + AssetID + "','SoftwareID': '" + SoftwareID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                            DestroyAssetSoftwareTable();
+                           AddSoftwares(AssetID);
+                            alert("Software has been UnTagged to this Asset");
+                        },
+                        error: function () { alert('A error'); }
+                    });
+
+        }
+
+               function GetRequestedMID(SRID)
+        {
+           
+            $.ajax({
+                        type: "POST",
+                        url: "/Admin/GetRequestedMID",
+                        contentType: "application/json; charset=utf-8",
+                        data:  "{'SRID': '" + SRID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+
+                            if (response != true && response != false) {
+                                $("#tblMID tbody").empty();
+                                for (var i = 0; i < response.length; i++) {
+
+                                    var html = '<tr><td>' + response[i].MID + '</td>' +
+                                        '<td>' + response[i].Name + '</td>' +
+                                        "<td><button type='button' title='Add' class='btn btn-success btnAdd' onclick='' id=" + response[i].ID + ">Add</button></td></tr>";
+                                    $("#tblMID tbody").append(html);
+
+                                }
+                                $("#tblMID").DataTable({
+                                    "bSort": false,
+                                    "bPaginate": true,
+                                });
+                                $("#AssetMID").modal("show");
+                            }
+                            else if (response == true) {
+                                $("#tblMID tbody").empty();
+                                 $("#tblMID tbody").append("All Requested MID have already been tagged");
+                                $("#tblMID").DataTable({
+                                    "bSort": false,
+                                    "bPaginate": true,
+                                });
+                                $("#AssetMID").modal("show");
+                            }
+                            else if (response == false) {
+                                alert("NO MID has been requested for this SR000000" + SRID);
+                            }
+                        },
+                        error: function () { alert('A error'); }
+                    });
+            
+            }
+
+          function CheckAssetMIDMapping(MID,SRID)
+        {
+            var AssetID = $(".Astname").attr("ID");
+            $.ajax({
+                        type: "POST",
+                        url: "/Admin/CheckAssetMIDMapping",
+                        contentType: "application/json; charset=utf-8",
+                        data: "{'MID': '" + MID + "','AssetID': '" + AssetID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                          
+                            if (response != true && response != false) {
+
+                                if (confirm("This MID is already tagged to below Assets\n" + response + "\nDo you wish to allocate this asset ?") == true) {
+                                   TagAssetMID(MID, SRID);
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+                            else if (response == true) {
+                                alert("Already tagged to this Asset");
+                            }
+                            else {
+                                TagAssetMID(MID, SRID);
+                            }
+                            
+                        },
+                        error: function () { alert('A error'); }
+                    });
+            
+        }
+
+               function TagAssetMID(MID,SRID)
+        {
+            var AssetID = $(".Astname").attr("ID");
+            $.ajax({
+                        type: "POST",
+                        url: "/Admin/TagAssetMID",
+                        contentType: "application/json; charset=utf-8",
+                        data:  "{'MID': '" + MID + "','AssetID': '" + AssetID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                          
+                            if (response != false) {
+                                DestroyAssetMIDTable();
+                                
+                                GetTaggedMID(AssetID);
+                                alert("MID has been tagged now to this Asset !!");
+                                GetRequestedMID(SRID);
+                            }
+                            else {
+                                alert("This MID has already been tagged to this Asset");
+                            }
+                            
+                        },
+                        error: function () { alert('A error'); }
+                    });
+            
+        }
+
+               function UnTagAssetMID(MID,SRID)
+                    {
+           var AssetID = $(".Astname").attr("ID");
+                        $.ajax({
+                        type: "POST",
+                        url: "/Admin/UnTagAssetMID",
+                        contentType: "application/json; charset=utf-8",
+                        data:  "{'MID': '" + MID + "','AssetID': '" + AssetID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                          
+                            if (response != false) {
+                                DestroyAssetMIDTable();
+                                GetTaggedMID(AssetID);
+                                alert("MID has been untagged to this Asset");
+                                GetRequestedMID(SRID);
+                            }
+                            else {
+                                alert("Some connection error occured . Please try again !!!");
+                            }
+                            
+                        },
+                        error: function () { alert('A error'); }
+                    });
+            
+        }
+
+               function GetTaggedMID(AssetID) {
+
+                     $.ajax({
+                        type: "POST",
+                        url: "/Admin/GetTagAssetMID",
+                        contentType: "application/json; charset=utf-8",
+                        data:  "{'AssetID': '" + AssetID + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                          
+                            if (response != false) {
+                                
+                                $("#tblAssetMID tbody").empty();
+                                for (var i = 0; i < response.length; i++) {
+
+                                    var html = '<tr><td>' + response[i].MID + '</td>' +
+                                        '<td>' + response[i].Name + '</td>' +
+                                        "<td><button type='button' title='Delete' class='btn btn-success btnDel' onclick='' id="+response[i].ID+">Delete</button></td></tr>";
+                                    $("#tblAssetMID tbody").append(html);
+
+                                }
+                                $("#tblAssetMID").DataTable({
+    "bSort":false,
+      "bPaginate":true,
+});
+                            }
+                            else {
+                                 $("#tblAssetMID tbody").empty();
+                              $("#tblAssetMID tbody").append("No Data Available");
+                               $("#tblAssetMID").DataTable();
+                            }
+                            
+                        },
+                        error: function () { alert('A error'); }
+                    });
+        }
+
+               function DestroyAssetSoftwareTable() {
+                var tbl = $('#tblSoftware').DataTable();
+                          tbl.destroy();
+                 var table = $('#tblAssetSoftware').DataTable();
+                            table.destroy();
+        }
+
+               function DestroyAssetMIDTable() {
+             var MIDtable = $('#tblMID').DataTable();
+                        MIDtable.destroy();
+              var AssetMIDtable = $('#tblAssetMID').DataTable();
+                          AssetMIDtable.destroy();
+        }
+
+                  $(document).ready(function () {
+                      $.noConflict();
+                      SearchTable();
+
+                      $("#tableID").on('click', '.btnassign', function () {
+                           var assetname = $(this).closest("tr").find("#Name").text();
+                          var id = this.id;
+                          AssetAssign(assetname, id);
+                      });
+                      $("#tableID").on('click', '.btnAddSoftware', function () {
+
+                          var name = $(this).closest("tr").find("#Name").text();
+                          var id = this.id;
+                          AddSoftwares(id);
+                          $(".AssetName").text(name);
+                          $(".AssetName").attr("ID", id);
+                      });
+
+                       $("#tableID").on('click', '.btnMIDTag', function () {
+                           var asset = $(this).closest("tr").find("#Name").text();
+                           var SRID = $(this).closest("tr").find("#SRID").text();
+                           $(".Astname").text(asset);
+                           $(".SRID").text(SRID);
+                           var id = SRID.substring(8);
+                           var assetid = this.id;
+                           $(".Astname").attr("ID", assetid);
+                           if (id != "") {
+                               GetRequestedMID(id);
+                                 GetTaggedMID(assetid);
+                               $("#tblMID").off('click').on('click', '.btnAdd', function () {
+                                   var mid = this.id;
+                                   //TagAssetMID(mid,id);
+                                   CheckAssetMIDMapping(mid, id);
+                               });
+                               $("#tblAssetMID").off('click').on('click', '.btnDel', function () {
+                                   var mid = this.id;
+                                   UnTagAssetMID(mid,id);
+
+                        });
+                           }
+                           else {
+                               alert("Please tag SR against this asset before MID tag");
+                           }
+                      });
+                      $("#tblSoftware").on('click', '.btnTag', function () {
+
+                          var id = this.id;
+                          TagSoftware(id);
+                      });
+                      $("#tblAssetSoftware").on('click', '.btnUnTag', function () {
+
+                            var id = this.id;
+                            UnTagSoftware(id);
+
+                      });
+
+                    
+                         if ("@TempData["Machinetype"]" != "") {
+               $("#MachineType").val('@TempData["Machinetype"]');
+                             $("#Status").val('@TempData["ServerStatus"]');
+
+                $("#Status").focus();
+            }
+
+                      $("#Close").click(function () {
+                          DestroyAssetSoftwareTable();
+                       });
+                     
+                      $("#btnClose").click(function () {
+                          DestroyAssetMIDTable();
+                       });
+                     
+                   
+                  });
+    </script>
+</div>
+
+}

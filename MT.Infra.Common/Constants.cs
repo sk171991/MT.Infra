@@ -1,0 +1,5 @@
+﻿
+namespace MT.Infra.Common
+{
+   
+}

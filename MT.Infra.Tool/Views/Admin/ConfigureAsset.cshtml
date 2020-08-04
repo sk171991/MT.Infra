@@ -1,0 +1,375 @@
+﻿@model MT.Infra.BusinessLayer.ViewAssetsModel
+
+@{
+    ViewBag.Title = "Configure Assets";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+<style>
+    .Col1 {
+        /*border: 1px solid #ff0000;*/
+        margin-top: 7px;
+        text-align: left;
+    }
+
+    .Col2 {
+        margin-top: 7px;
+    }
+
+    .d {
+        width: 230px;
+    }
+</style>
+<script src="~/Scripts/a076d05399.js"></script>
+<link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <META Http-Equiv="Cache-Control" Content="no-cache">
+    <META Http-Equiv="Pragma" Content="no-cache">
+    <META Http-Equiv="Expires" Content="0">
+    <meta name="viewport" content="width=device-width" />
+    <title>Asset Management</title>
+    @*<SCRIPT type="text/javascript">
+            window.history.forward();
+            function noBack() { window.history.forward(); }
+        </SCRIPT>*@
+</head>
+
+<body>
+    <div class="panel responsive">
+        @using (Html.BeginForm())
+        {
+
+            @Html.AntiForgeryToken()
+            @Html.Raw(TempData["msg"])
+            @*<div class="form-horizontal">*@
+            <h4>Add Assests</h4>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group" style="font-size:12px">
+                <table class="table table-borderless">
+                    <tbody class="col-sm-12">
+                        <tr>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.SystemName, htmlAttributes: new { @class = "control-label" })
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.EditorFor(model => model.SystemName, new { htmlAttributes = new { @class = "form-control", required = "Required" } })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.SystemName, "", new { @class = "text-danger" })
+                            </td>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.SerialNumber, htmlAttributes: new { @class = "control-label" })
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.EditorFor(model => model.SerialNumber, new { htmlAttributes = new { @class = "form-control", required = "Required" } })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.SerialNumber, "", new { @class = "text-danger" })
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.SystemIP, htmlAttributes: new { @class = "control-label" })
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.EditorFor(model => model.SystemIP, new { htmlAttributes = new { @class = "form-control", required = "Required" } })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.SystemIP, "", new { @class = "text-danger" })
+                            </td>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.MachineCode, htmlAttributes: new { @class = "control-label" })
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.EditorFor(model => model.MachineCode, new { htmlAttributes = new { @class = "form-control", required = "Required" } })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.MachineCode, "", new { @class = "text-danger" })
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.MachineType, htmlAttributes: new { @class = "control-label" })
+
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.DropDownList("MachineType", (IEnumerable<SelectListItem>)ViewData["DropdownAssets"], "Select Machine Type", new { @class = "form-control dropdown d", required = "Required" })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.MachineType, "", new { @class = "text-danger" })
+                            </td>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "control-label " })
+
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control d", required = "Required" } })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.RegistrationDate, "", new { @class = "text-danger" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="col-sm-3" style="text-align:right;font-size:medium">
+                                @Html.LabelFor(model => model.ExpirationDate, htmlAttributes: new { @class = "control-label" })
+                            </th>
+                            <td class="col-sm-3" align="left">
+                                @Html.EditorFor(model => model.ExpirationDate, new { htmlAttributes = new { @class = "form-control d", required = "Required" } })
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
+                            </td>
+                            <td class="col-sm-3">
+                                <input type="submit" value="Submit" class="btn btn-sm btn-success" id="Submit" style="width:100px;float:right;" />
+                            </td>
+                            <td class="col-sm-3">
+                                <input type="button" value="Configure Softwares" class="btn btn-success btn-sm pull-right" style="float:right;" data-toggle="modal" data-target="#myModal" id="Softwares" />
+
+                            </td>
+                        </tr>
+                </table>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Software Configuration</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-3 form-group" style="width:auto">
+                                        <label id="ID" hidden></label>    Name : <input type='text' id="txtSoftName" class="form-control required" style='margin-top: 2px;width:15em;' />
+                                    </div>
+                                    <div class="col-sm-3 form-group" style="width:auto">
+                                        Description : <input type='text' id="txtDescription" style='margin-top: 2px;width:15em;' class="form-control required" />
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-success" style='margin-top: 1.4em;' id="SoftwareSave">Save</button>
+                                    </div>
+                                </div>
+                                <table id="AddSoftware" class="table table-bordered" cellspacing="0" style="width:100%;">
+
+                                    <caption style="color:#7a53f2; font-size:20px"><b>Software Details</b></caption>
+                                    <thead>
+                                        <tr style="background-color:#7386D5">
+                                            <th style="display:none"></th>
+                                            <th style="color:white">Name</th>
+                                            <th style="color:white">Description</th>
+                                            <th style="color:white">Created Time Stamp</th>
+                                            <th style="color:white">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="tableID" class="table table-bordered" cellspacing="0" style="width:100%;">
+
+                    <caption style="color:#7a53f2; font-size:20px"><b>Assets Details</b></caption>
+                    <thead>
+                        <tr style="background-color:#7386D5">
+                            <th style="color:white">System Name</th>
+                            <th style="color:white">SerialNumber</th>
+                            <th style="color:white">SystemIP</th>
+                            <th style="color:white">Machine Code</th>
+                            <th style="color:white">Machine Type</th>
+                            <th style="color:white">Registration Date</th>
+                            <th style="color:white">Expiration Date</th>
+                            <th style="color:white">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in ViewBag.AssetsData)
+                        {
+                            <tr>
+                                <td>@row.SystemName</td>
+                                <td>@row.SerialNumber</td>
+                                <td>@row.SystemIP</td>
+                                <td>@row.MachineCode</td>
+                                <td>@row.MachineType</td>
+                                <td>@row.RegistrationDate.ToShortDateString()</td>
+                                <td>@row.ExpirationDate.ToShortDateString()</td>
+                                <td style="white-space:nowrap;">
+
+                                    @Html.ActionLink("Edit", "AssetManageEdit", new { id = row.ID }, new { @class = "btn btn-xs btn-success" })
+                                    @Html.ActionLink("Delete", "Delete", new { id = row.ID }, new { @class = "btn btn-xs btn-danger", onclick = "return confirm('Are sure wants to delete Record?');" })
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        }
+
+        @if (ViewBag.Message != null)
+        {
+            <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+            </script>
+        }
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    function SearchTable() {
+        $('#tableID').DataTable();
+        $('.dataTables_length').addClass('bs-select');
+    }
+
+    function convertToJavaScriptDate(value) {
+        var pattern = /Date\(([^)]+)\)/;
+        var results = pattern.exec(value);
+        var dt = new Date(parseFloat(results[1]));
+        return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+    }
+    function SoftwareTable() {
+        $('#AddSoftware').DataTable();
+       $('.dataTables_length').addClass('bs-select');
+    }
+
+    function SoftwareDetails() {
+        $.ajax({
+            url: '/Admin/SoftwareDetails',
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (response) {
+                $("#AddSoftware tbody").empty();
+
+                for (var i = 0; i < response.length; i++) {
+
+                    var html = '<tr><td style="display:none" id="ID">' + response[i].ID + '</td>' +
+                        '<td id="Name">' + response[i].Name + '</td>' +
+                        '<td id="Description">' + response[i].Description + '</td>' +
+                        '<td>' + convertToJavaScriptDate(response[i].CreatedTimeStamp) + '</td>' + '<td>' +
+                        "<button style='padding: 1px 8px 1px 9px;' type='button' title='Edit' class='btn btn-xs btn-success' onclick='' id='btnEdit'><i class='fa fa-pencil-alt' title='Edit'></i></button>" +
+                        "  <button style='padding: 1px 8px 1px 9px;' type='button' title='Delete' class='btn btn-xs btn-danger' onclick='' id='btnDel'><i class='fa fa-trash'></i></button></td></tr>";
+                    $("#AddSoftware tbody").append(html);
+
+                }
+                SoftwareTable();
+            }
+        });
+    }
+    $(document).ready(function () {
+      $.noConflict();
+        SearchTable();
+        $("#Softwares").on('click', function () {
+            $("#txtSoftName").val("");
+            $("#txtDescription").val("");
+            $("#ID").html(" ");
+            SoftwareDetails();
+        });
+
+        $("#AddSoftware").on('click', '#btnDel', function () {
+
+            if (confirm('Are you sure to delete the Record ?') == true) {
+                $(this).closest('tr').remove();
+                var id = $(this).closest("tr").find("#ID").text();
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/SoftwareDelete",
+                    contentType: "application/json; charset=utf-8",
+                    data: "{'id': '" + id + "'}",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response == true) {
+                            alert("Record deleted successfully !!!");
+                        }
+                    },
+                    error: function () { alert('A error'); }
+                });
+            }
+        });
+
+        $("#AddSoftware").on('click', '#btnEdit', function () {
+
+            var id = $(this).closest("tr").find("#ID").text();
+            var name = $(this).closest("tr").find("#Name").text();
+            var description = $(this).closest("tr").find("#Description").text();
+            $("#txtSoftName").val(name);
+            $("#txtDescription").val(description);
+            $('#ID').html(id);
+            $(this).closest('tr').remove();
+            $("#txtSoftName").focus();
+        });
+
+        $("#SoftwareSave").on('click', function (e) {
+            var Name = $('#txtSoftName');
+            var Description = $("#txtDescription");
+
+
+            // Check if there is an entered value
+            if (!Name.val()) {
+                // Add errors highlight
+                Name.closest('.form-group').removeClass('has-success').addClass('has-error');
+
+                // Stop submission of the form
+                e.preventDefault();
+            }
+            else if (!Description.val()) {
+                Description.closest('.form-group').removeClass('has-success').addClass('has-error');
+
+                // Stop submission of the form
+                e.preventDefault();
+            }
+            else {
+                // Remove the errors highlight
+                Name.closest('.form-group').removeClass('has-error').addClass('has-success');
+                Description.closest('.form-group').removeClass('has-error').addClass('has-success');
+
+                var name = $("#txtSoftName").val();
+                var desp = $("#txtDescription").val();
+                var ID = $("#ID").html();
+                if (ID === " ") {
+                    ID = 0;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/AddSoftware",
+                    contentType: "application/json; charset=utf-8",
+                    data: '{"ID":"' + ID + '","Name":"' + name + '","Description":"' + desp + '"}',
+                    dataType: "json",
+                    success: function (response) {
+                        if (response == true) {
+                            $("#txtSoftName").val("");
+                            $("#txtDescription").val("");
+                            $("#ID").html(" ");
+                            alert("Software added Successfully !!");
+                           
+                            SoftwareDetails();
+                        }
+                    },
+                    error: function () { alert('A error'); }
+                });
+            }
+
+        });
+    });
+</script>

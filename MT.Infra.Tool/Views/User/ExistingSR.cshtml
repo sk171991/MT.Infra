@@ -1,0 +1,140 @@
+﻿@model MT.Infra.Tool.Models.ExistingSR
+
+@{
+    ViewBag.Title = "ExistingSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <p style=" font-size: 25px;font-weight:500;">Existing Service Request</p>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+<style>
+    .first {
+        width: 25%;
+    }
+
+    .ellipsis {
+        position: relative;
+    }
+
+        .ellipsis:before {
+            content: '&nbsp;';
+            visibility: hidden;
+        }
+
+        .ellipsis span {
+            position: absolute;
+            left: 0;
+            right: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    table {
+        width: 100%;
+    }
+</style>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="font-size:12px;">
+        <table class="table table-borderless">
+            <tbody class="col-sm-12">
+                <tr>
+                    <th class="col-sm-3" style="padding-right:0em" align="right">
+                        @Html.LabelFor(model => model.SR_Number, "Service Request ID:", htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @Html.EditorFor(model => model.SR_Number, new { htmlAttributes = new { @class = "form-control" } })
+                    </td>
+                    <td class="col-sm-1"></td>
+                    <th class="col-sm-2" style="padding-right:0em" align="right">
+                        @Html.LabelFor(model => model.Status, "Status:", htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-3" style="padding-left:0em;" align="left">
+                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, "Select", new { @class = "form-control" })
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col-sm-3" align="right">
+                        @Html.LabelFor(model => model.SR_Ticket_From, "SR From:", htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-3" align="left">
+                        @Html.EditorFor(model => model.SR_Ticket_From, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    </td>
+                    <td class="col-sm-1"></td>
+                    <th class="col-sm-2" align="right">
+                        @Html.LabelFor(model => model.SR_Ticket_To, "SR Till:", htmlAttributes: new { @class = "control-label" })
+                    </th>
+                    <td class="col-sm-3" style="padding-left:0em;" align="left">
+                        @Html.EditorFor(model => model.SR_Ticket_To, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-group row">
+            <div style="text-align:center">
+                <input type="submit" value="Search" class="btn btn-success"/>
+
+                <button type="reset" style="width:80px" class="btn btn-success" onclick="window.location='/User/ExistingSR'">Reset</button>
+            </div>
+    </div>
+
+
+    <a href="/User/UserDashboard" type="button" class="btn btn-success">Back</a>
+    <hr style="border:solid" />
+
+    <table id="tableID" class="table table-bordered" cellspacing="0" style="width:100%; font-size:12px;">
+        <thead>
+            <tr style="background-color:#7386D5">
+                <th style="color:#000000">SR Number</th>
+                <th style="color:#000000">SR Description</th>
+                <th style="color:#000000">Status</th>
+                <th style="color:#000000">Pending With</th>
+                <th style="color:#000000">Role</th>
+                <th style="color:#000000">From Date</th>
+                <th style="color:#000000">Till Date</th>
+                <th style="color:#000000">Last Modified Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in ViewBag.ExistingSR)
+            {
+            <tr>
+                <td style="color:blue"><a href="./ExistingSRtoSRDetails?id=@row.SR_ID " id=@row.SR_ID>@row.SR_ID</a></td>
+                <td title="@row.SRDescription" class="ellipsis first"><span>@row.SRDescription</span></td>
+                <td>@row.Status</td>
+                <td>@row.UserName</td>
+                <td>@row.UserRole</td>
+                <td>@row.FromDate.ToShortDateString()</td>
+                <td>@row.TillDate.ToShortDateString()</td>
+                <td>@row.LastModifiedTimeStamp</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <script type="text/javascript">
+
+        function SearchTable() {
+          $('#tableID').DataTable({
+              "order": [],
+                dom: 'Bfrtip'
+            });
+            $('.dataTables_length').addClass('bs-select');
+        }
+        $(document).ready(function () {
+            $.noConflict();
+            SearchTable();
+            if ("@TempData["SRStatus"]" != "") {
+                $("#Status option:contains(" + '@TempData["SRStatus"]' + ")").attr("selected", true);
+                $("select:first").focus();
+            }
+        });
+    </script>
+        </div>
+}

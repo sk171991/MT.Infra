@@ -1,0 +1,201 @@
+﻿@model MT.Infra.BusinessLayer.SRReports.Reports
+
+@{
+    ViewBag.Title = "SRReports";
+
+    Layout = "~/Views/Shared/_ApproverLayout.cshtml";
+
+}
+<p style=" font-size: 25px;font-weight:500;">Service Request Report</p>
+<link href="~/Content/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.dataTables.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/dataTables.buttons.min.js"></script>
+<script src="~/Scripts/buttons.flash.min.js"></script>
+<script src="~/Scripts/jszip.min.js"></script>
+<script src="~/Scripts/pdfmake.min.js"></script>
+<script src="~/Scripts/vfs_fonts.js"></script>
+<script src="~/Scripts/buttons.html5.min.js"></script>
+<script src="~/Scripts/buttons.print.min.js"></script>
+<script src="~/Scripts/buttons.colVis.min.js"></script>
+<link rel="stylesheet" href="~/Scripts/buttons.dataTables.min.css">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, "Employee Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDate, "SR From Date", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.EndDate, "SR End Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @*@Html.CheckBoxFor("Status", ViewData["Status"] as SelectList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })*@
+
+                @foreach (var status in ViewBag.Status)
+                {
+                    <input id="@status.ID" type="checkbox" name="status" value="@status.Name.ToString().Trim()" onclick="" /> @status.Name <br />
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" ID="Search" value="Search" class="btn btn-success" onclick="" />
+                <button id="Reset" class="btn" type="button">Reset</button>
+            </div>
+
+        </div>
+    </div>
+    <table id="tableID" class="table table-bordered" cellspacing="0" style="width:100%;">
+        <thead>
+            <tr style="background-color:#7386D5">
+                <th style="color:#000000">SR Number</th>
+                <th style="color:#000000">SR Description</th>
+                <th style="color:#000000">Status</th>
+                <th style="color:#000000">CreatedBy</th>
+                <th style="color:#000000">UserLocation</th>
+                <th style="color:#000000">ContactNumber</th>
+                <th style="color:#000000">From Date</th>
+                <th style="color:#000000">Till Date</th>
+                <th style="color:#000000">SR Created TimeStamp</th>
+                <th style="color:#000000">SR LastModified TimeStamp</th>
+                <th style="color:#000000">Asset Name</th>
+                <th style="color:#000000">Asset Assigned TimeStamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.ReportTable != null)
+            {
+                foreach (var row in ViewBag.ReportTable)
+                {
+            <tr>
+                @*<td>@Html.ActionLink("Delete", "ExistingSRtoSRDetails", new { id = row.SR_ID }, new { @class = "btn btn-xs btn-danger" })</td>*@
+                <td>@row.ServiceRequestID</td>
+                <td>@row.SRDescription</td>
+                <td>@row.statusName</td>
+                <td>@row.CreatedBy</td>
+                <td>@row.UserLocation</td>
+                <td>@row.ContactNumber</td>
+                <td>@row.FromDate.ToShortDateString()</td>
+                <td>@row.TillDate.ToShortDateString()</td>
+                <td>@row.CreatedTimeStamp.ToShortDateString()</td>
+                <td>@row.LastModifiedTimeStamp</td>
+                <td>@row.AssetName</td>
+                <td>@row.AssetAssignedDate</td>
+            </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    Records to be Displayed on SEARCH
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+
+        function getDate() {
+            var d = new Date($.now());
+            var dt = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "_" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+           return dt;
+        }
+
+
+        function SearchTable() {
+
+      $('#tableID').DataTable({
+                dom: 'Bfrtip',
+                columnDefs: [
+                    {
+                        targets: 1,
+                        className: 'noVis'
+                    }
+                ],
+                buttons: [{
+                    extend: 'colvis',
+                    text: 'Column Selection',
+                    //columns: ':not(.noVis)',
+
+                },
+                {
+                    extend: 'collection',
+                    text: 'Export Options',
+                    buttons: [{
+                        extend: 'pdf',
+                        filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: "thead th:not(.noExport)"
+                        }
+                    }, {
+                        extend: 'excel',
+                        filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: "thead th:not(.noExport)"
+                        }
+                        },
+                        {
+                            extend: 'csv',
+                            filename: function () { return getDate(); },
+                        exportOptions: {
+                            columns: "thead th:not(.noExport)"
+                        }
+                    }
+                    ]
+                    }
+                ]
+            });
+                $('.dataTables_length').addClass('bs-select');
+
+
+        }
+
+        
+        function submit_click(event) {
+            var pageURL = $(location).attr("href");
+            window.location.href = pageURL;
+        }
+        $(document).ready(function () {
+            $.noConflict();
+            SearchTable();
+
+            $('#Reset').bind('click', submit_click);
+
+            //$("#export").click(function () {
+
+            //    $("#tableID").tableToCSV();
+
+
+            //});
+        });
+    </script>
+
+}
+
+

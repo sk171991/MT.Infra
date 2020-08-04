@@ -1,0 +1,164 @@
+﻿@model MT.Infra.Tool.Models.Register
+
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html>
+<head>
+    <style>
+        .login-form {
+            background-image: url('../Images/mindtree.jpg');
+        }
+
+        .gradient {
+            background-image: linear-gradient( to right, violet, pink, ghostwhite, violet );
+        }
+    </style>
+    <link rel="stylesheet" href="~/Scripts/bootstrap.min.css">
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <div class="main-login" , id="parent">
+        <form align="center" method="POST">
+            <div class="login-screen">
+                <div class="app-title">
+                    <div class="login-form" style="height:780px;">
+                        <fieldset>
+                            <legend style="color:white">Please login with your Mindtree credentials</legend>
+                            <div class="container" style="border:white solid 1px;background-color:white;width:600px;">
+                                <div class="imgcontainer" style="float:left">
+                                    <img src="~/Images/MindtreeUserIcon.png" alt="Avatar" class="avatar" style="height:17em;">
+                                </div>
+                                <div class="login-box well" style="float:right;width:300px">
+                                    <div class="form-group">
+                                        <label for="Username">Username (MID)</label>
+                                        <input name="MID" placeholder="MXXXXXX" type="text" class="form-control" required="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input name="Password" placeholder="Password" type="password" class="form-control" required="" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-success btn-login-submit btn-block m-t-md" value="Login" />
+                                    </div>
+                                    <div>
+                                        <a href="#" id="Forgotpwd" style="color:deepskyblue;float:left" data-toggle="modal" data-target="#ForgotPwd"><b>Forgot Password</b></a>
+                                        <a href="~/Login/Register" id="Register" style="color:deepskyblue;float:right"><b>Sign Up</b></a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- myModal -->
+    <div class="modal fade" id="ForgotPwd" role="dialog">
+        <div class="modal-dialog" style="width:800px">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Forgot Password</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group" style="text-align: center;">
+                            Please enter your registered email address to reset your password
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, "Email ID", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", required = "Required" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="button" id="ResetPwd" class="btn btn-success" value="Reset Password" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="Close">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+      
+ <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Register").click(function () {
+                alert("Navigating you to the registration page")
+            });
+              if ('@ViewBag.Message' != '')
+                  {
+                      alert('@ViewBag.Message');
+                  }
+              });
+            </script>
+
+        
+        @if (ViewBag.Reset != null)
+        {
+            <script type="text/javascript">
+        $(document).ready(function () {
+
+            alert('@ViewBag.Reset');
+
+           
+        });
+            </script>
+        }
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#ResetPwd").on('click', function () {
+                if ($("#Email").val() != "") {
+                    var Email = $("#Email").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Login/ResetPwd",
+                        contentType: "application/json; charset=utf-8",
+                        data:  "{'Email': '" + Email + "'}",
+                        dataType: "json",
+                        success: function (response) {
+                          
+                            if (response != false) {
+                                
+                                alert("Please check your email . We have sent you the reset password link on your email Address");
+                                $("#Email").val("");
+                                $("#ForgotPwd").modal("hide");
+                            }
+                            
+                            else {
+                                alert("We cannot find this email Address. Please try Again !!! ");
+                            }
+                            
+                        },
+                        error: function () { alert('A error'); }
+                    });
+
+                }
+                else {
+                    alert("Please provide your registered Email Address");
+                }
+            });
+        });
+            </script>
+        
+</body>
+</html>
+

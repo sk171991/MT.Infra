@@ -1,0 +1,124 @@
+﻿@using System.Web.Optimization
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+</head>
+<body>
+    <style>
+      
+    </style>
+    @*------------------------*@
+<div class="wrapper">
+    <nav id="sidebar">
+        <div class="container-fluid">
+            <div class="sidebar-header" align="center">
+                <img src="~/Images/MindtreeUserIcon.png" class="img-circle" width="100" height="100" />
+
+                <br />
+
+                @{
+                    var v = Session["username"];
+                }
+                <div>@v</div>
+                @{
+                    var m = Session["id"];
+                }
+                <div>@m</div>
+            </div>
+            <div id="menucontainer">
+                <ul id="menu">
+                </ul>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li><a href="/Approver/ApproverDashboard">Dashboard</a></li>
+                <li class="active">
+                    <p>Service request</p>
+                </li>
+                <ul>
+                    <li>
+                        <a href="/Approver/NewSR">New SR</a>
+                    </li>
+                    <li>
+                        <a href="/Approver/ExistingSr">Existing SR</a>
+                    </li>
+                    <li>
+                        <a href="/Approver/SRReports">SR Reports</a>
+                    </li>
+                </ul>
+            </ul>
+            <ul class="list-unstyled components">
+                <li><a href="/Approver/UserManagement">User Management</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!-- Page Content  -->
+    <div id="content">
+        <div>
+            <span id="sidebarCollapse" style="height:10px;width:10px">
+                <img src="~/Images/sidebaricon.png" height="20" width="25" />
+            </span>
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-image: url('../../Images/MindtreeBarLogo.PNG'); height:10px">
+            @*<div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="float:right">*@
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="float:right">
+                <div class="row">
+
+                    <div class="col-lg-2 col-xs-2" style="margin-bottom: -5px">
+                        <button type="button" class="btn btn-primary" onclick="window.location ='/Login/Loginform'">Logout</button>
+                     @*  <a href="/Login/Loginform" class="btn btn-secondary" role="button" style="color:">Logout</a>*@
+                        @*<b> <u>@Html.ActionLink("Logout", "Index", "Login")</u></b>*@
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+        @RenderBody()
+    </div>
+</div>
+
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+
+        });</script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @RenderSection("scripts", required: false)
+
+
+    <script>
+    //session end
+    var sessionTimeoutWarning = @Session.Timeout- 1;
+    var sTimeout = parseInt(sessionTimeoutWarning) * 60 * 1000;
+    setTimeout('SessionEnd()', sTimeout);
+        function SessionEnd() {
+            alert("Session Timeout \n Please Login Again!!!");
+            window.location = "/Login/Loginform";
+    }
+    </script>
+
+</body>
+</html>

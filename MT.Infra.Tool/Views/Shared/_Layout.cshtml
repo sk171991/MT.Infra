@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @*@Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")*@
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+</head>
+<body>
+    <style>
+        .navbar {
+            margin-bottom: 0px;
+        }
+    </style>
+
+
+    @*------------------------*@
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header" align="center">
+
+                <img src="~/Images/MindtreeUserIcon.png" class="img-circle" width="100" height="100" />
+                @{
+                    var v = Session["username"];
+                }
+                <div>@v</div>
+
+                @{
+                    var m = Session["id"];
+                }
+
+                <div>@m</div>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="/User/userDashboard"> Dashboard </a>
+                </li>
+                <li class="active">
+                    <p>Service Request</p>
+                </li>
+                <ul>
+                    <li>
+                        <a href="/User/newSR">New SR</a>
+                    </li>
+                    <li>
+                        <a href="/User/existingSR">Existing SR</a>
+                    </li>
+                </ul>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-image: url('../../Images/MindtreeBarLogo.PNG');">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="float:right">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-2" style="font-size:15px;padding-top:10px">
+                            <button type="button" class="btn btn-primary" onclick="window.location ='/Login/Loginform'">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });</script>
+
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")*@
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
